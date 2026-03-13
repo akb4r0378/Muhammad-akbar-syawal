@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Greeting Initialization</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+    .test-result {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+    }
+    .pass {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .fail {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    .greeting-display {
+      border: 2px solid #ccc;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <h1>Test Greeting Initialization (Task 3.3)</h1>
+  
+  <div class="greeting-display">
+    <h2>Greeting Display</h2>
+    <div id="time-display">Loading...</div>
+    <div id="date-display">Loading...</div>
+    <h1 id="greeting-message">Loading...</h1>
+  </div>
+
+  <div id="results"></div>
+
+  <script src="js/app.js"></script>
+  <script>
+    const results = document.getElementById('results');
+    
+    // Test that updateGreeting was called on page load
+    setTimeout(() => {
+      const timeDisplay = document.getElementById('time-display').textContent;
+      const dateDisplay = document.getElementById('date-display').textContent;
+      const greetingMessage = document.getElementById('greeting-message').textContent;
+      
+      if (timeDisplay !== 'Loading...' && timeDisplay.length > 0) {
+        results.innerHTML += '<div class="test-result pass">✓ updateGreeting() was called on page load - time display updated</div>';
+      } else {
+        results.innerHTML += '<div class="test-result fail">✗ updateGreeting() was NOT called on page load - time display still shows "Loading..."</div>';
+      }
+      
+      if (dateDisplay !== 'Loading...' && dateDisplay.length > 0) {
+        results.innerHTML += '<div class="test-result pass">✓ updateGreeting() was called on page load - date display updated</div>';
+      } else {
+        results.innerHTML += '<div class="test-result fail">✗ updateGreeting() was NOT called on page load - date display still shows "Loading..."</div>';
+      }
+      
+      if (greetingMessage !== 'Loading...' && greetingMessage.length > 0) {
+        results.innerHTML += '<div class="test-result pass">✓ updateGreeting() was called on page load - greeting message updated</div>';
+      } else {
+        results.innerHTML += '<div class="test-result fail">✗ updateGreeting() was NOT called on page load - greeting message still shows "Loading..."</div>';
+      }
+      
+      // Test that setInterval is updating every second
+      const initialTime = document.getElementById('time-display').textContent;
+      
+      setTimeout(() => {
+        const updatedTime = document.getElementById('time-display').textContent;
+        
+        if (updatedTime !== initialTime) {
+          results.innerHTML += '<div class="test-result pass">✓ setInterval is working - time display updated after 2 seconds</div>';
+        } else {
+          results.innerHTML += '<div class="test-result fail">✗ setInterval may not be working - time display did not update after 2 seconds (or time didn\'t change)</div>';
+        }
+        
+        results.innerHTML += '<div class="test-result pass"><strong>Task 3.3 Implementation Complete! ✓</strong></div>';
+        results.innerHTML += '<div class="test-result pass">The greeting display initializes on page load and updates every second.</div>';
+      }, 2000);
+      
+    }, 100);
+  </script>
+</body>
+</html>

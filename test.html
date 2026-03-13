@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Utility Functions Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+    .test-result {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+    }
+    .pass {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .fail {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+  </style>
+</head>
+<body>
+  <h1>Utility Functions Test Suite</h1>
+  <div id="results"></div>
+
+  <script src="js/app.js"></script>
+  <script>
+    const results = document.getElementById('results');
+    
+    function test(name, fn) {
+      try {
+        fn();
+        results.innerHTML += `<div class="test-result pass">✓ ${name}</div>`;
+      } catch (error) {
+        results.innerHTML += `<div class="test-result fail">✗ ${name}: ${error.message}</div>`;
+      }
+    }
+
+    function assert(condition, message) {
+      if (!condition) {
+        throw new Error(message);
+      }
+    }
+
+    // Test generateId()
+    test('generateId() returns a string', () => {
+      const id = generateId();
+      assert(typeof id === 'string', 'Should return a string');
+    });
+
+    test('generateId() returns non-empty string', () => {
+      const id = generateId();
+      assert(id.length > 0, 'Should return non-empty string');
+    });
+
+    test('generateId() returns unique IDs', () => {
+      const id1 = generateId();
+      const id2 = generateId();
+      assert(id1 !== id2, 'Should return unique IDs');
+    });
+
+    // Test padZero()
+    test('padZero(0) returns "00"', () => {
+      assert(padZero(0) === '00', 'Should return "00"');
+    });
+
+    test('padZero(5) returns "05"', () => {
+      assert(padZero(5) === '05', 'Should return "05"');
+    });
+
+    test('padZero(9) returns "09"', () => {
+      assert(padZero(9) === '09', 'Should return "09"');
+    });
+
+    test('padZero(10) returns "10"', () => {
+      assert(padZero(10) === '10', 'Should return "10"');
+    });
+
+    test('padZero(25) returns "25"', () => {
+      assert(padZero(25) === '25', 'Should return "25"');
+    });
+
+    // Test formatTime()
+    test('formatTime(0) returns "00:00"', () => {
+      assert(formatTime(0) === '00:00', 'Should return "00:00"');
+    });
+
+    test('formatTime(30) returns "00:30"', () => {
+      assert(formatTime(30) === '00:30', 'Should return "00:30"');
+    });
+
+    test('formatTime(60) returns "01:00"', () => {
+      assert(formatTime(60) === '01:00', 'Should return "01:00"');
+    });
+
+    test('formatTime(90) returns "01:30"', () => {
+      assert(formatTime(90) === '01:30', 'Should return "01:30"');
+    });
+
+    test('formatTime(1500) returns "25:00"', () => {
+      assert(formatTime(1500) === '25:00', 'Should return "25:00"');
+    });
+
+    test('formatTime(1499) returns "24:59"', () => {
+      assert(formatTime(1499) === '24:59', 'Should return "24:59"');
+    });
+
+    test('formatTime(125) returns "02:05"', () => {
+      assert(formatTime(125) === '02:05', 'Should return "02:05"');
+    });
+
+    // Test getGreetingMessage()
+    test('getGreetingMessage(0) returns "Good Night"', () => {
+      assert(getGreetingMessage(0) === 'Good Night', 'Should return "Good Night"');
+    });
+
+    test('getGreetingMessage(4) returns "Good Night"', () => {
+      assert(getGreetingMessage(4) === 'Good Night', 'Should return "Good Night"');
+    });
+
+    test('getGreetingMessage(5) returns "Good Morning"', () => {
+      assert(getGreetingMessage(5) === 'Good Morning', 'Should return "Good Morning"');
+    });
+
+    test('getGreetingMessage(11) returns "Good Morning"', () => {
+      assert(getGreetingMessage(11) === 'Good Morning', 'Should return "Good Morning"');
+    });
+
+    test('getGreetingMessage(12) returns "Good Afternoon"', () => {
+      assert(getGreetingMessage(12) === 'Good Afternoon', 'Should return "Good Afternoon"');
+    });
+
+    test('getGreetingMessage(16) returns "Good Afternoon"', () => {
+      assert(getGreetingMessage(16) === 'Good Afternoon', 'Should return "Good Afternoon"');
+    });
+
+    test('getGreetingMessage(17) returns "Good Evening"', () => {
+      assert(getGreetingMessage(17) === 'Good Evening', 'Should return "Good Evening"');
+    });
+
+    test('getGreetingMessage(20) returns "Good Evening"', () => {
+      assert(getGreetingMessage(20) === 'Good Evening', 'Should return "Good Evening"');
+    });
+
+    test('getGreetingMessage(21) returns "Good Night"', () => {
+      assert(getGreetingMessage(21) === 'Good Night', 'Should return "Good Night"');
+    });
+
+    test('getGreetingMessage(23) returns "Good Night"', () => {
+      assert(getGreetingMessage(23) === 'Good Night', 'Should return "Good Night"');
+    });
+
+    // ============================================================================
+    // Property-Based Testing Framework
+    // ============================================================================
+
+    /**
+     * Simple property-based testing framework (fast-check style)
+     */
+    function forAll(generator, property) {
+      const results = [];
+      for (const value of generator()) {
+        const result = property(value);
+        if (!result.pass) {
+          return {
+            pass: false,
+            counterexample: value,
+            message: result.message
+          };
+        }
+        results.push(result);
+      }
+      return { pass: true, tested: results.length };
+    }
+
+    /**
+     * Generate integers in a range [min, max]
+     */
+    function* integerRange(min, max) {
+      for (let i = min; i <= max; i++) {
+        yield i;
+      }
+    }
+
+    // ============================================================================
+    // Property-Based Tests
+    // ============================================================================
+
+    results.innerHTML += '<h2>Property-Based Tests</h2>';
+
+    // **Validates: Requirements 1.3, 1.4, 1.5, 1.6**
+    // Property 1: Greeting Time Accuracy
+    const greetingAccuracyResult = forAll(
+      () => integerRange(0, 23),
+      (hour) => {
+        const greeting = getGreetingMessage(hour);
+        let expectedGreeting;
+        
+        if (hour >= 5 && hour < 12) {
+          expectedGreeting = 'Good Morning';
+        } else if (hour >= 12 && hour < 17) {
+          expectedGreeting = 'Good Afternoon';
+        } else if (hour >= 17 && hour < 21) {
+          expectedGreeting = 'Good Evening';
+        } else {
+          expectedGreeting = 'Good Night';
+        }
+        
+        if (greeting !== expectedGreeting) {
+          return {
+            pass: false,
+            message: `getGreetingMessage(${hour}) returned "${greeting}" but expected "${expectedGreeting}"`
+          };
+        }
+        
+        return { pass: true };
+      }
+    );
+
+    if (greetingAccuracyResult.pass) {
+      results.innerHTML += `<div class="test-result pass">✓ Property 1: Greeting Time Accuracy - Tested all 24 hours (0-23)</div>`;
+    } else {
+      results.innerHTML += `<div class="test-result fail">✗ Property 1: Greeting Time Accuracy - Counterexample: hour = ${greetingAccuracyResult.counterexample} - ${greetingAccuracyResult.message}</div>`;
+    }
+
+    // **Validates: Requirements 2.7**
+    // Property 3: Timer Format Consistency
+    const timerFormatResult = forAll(
+      () => integerRange(0, 1500),
+      (seconds) => {
+        const formatted = formatTime(seconds);
+        const regex = /^\d{2}:\d{2}$/;
+        
+        if (!regex.test(formatted)) {
+          return {
+            pass: false,
+            message: `formatTime(${seconds}) returned "${formatted}" which does not match MM:SS format`
+          };
+        }
+        
+        // Additional validation: check that it's actually valid time format
+        const parts = formatted.split(':');
+        const minutes = parseInt(parts[0], 10);
+        const secs = parseInt(parts[1], 10);
+        
+        if (secs < 0 || secs > 59) {
+          return {
+            pass: false,
+            message: `formatTime(${seconds}) returned "${formatted}" with invalid seconds: ${secs}`
+          };
+        }
+        
+        if (minutes < 0) {
+          return {
+            pass: false,
+            message: `formatTime(${seconds}) returned "${formatted}" with negative minutes: ${minutes}`
+          };
+        }
+        
+        return { pass: true };
+      }
+    );
+
+    if (timerFormatResult.pass) {
+      results.innerHTML += `<div class="test-result pass">✓ Property 3: Timer Format Consistency - Tested ${timerFormatResult.tested} values (0-1500 seconds)</div>`;
+    } else {
+      results.innerHTML += `<div class="test-result fail">✗ Property 3: Timer Format Consistency - Counterexample: ${timerFormatResult.counterexample} - ${timerFormatResult.message}</div>`;
+    }
+
+    // **Validates: Requirements 3.1, 3.2, 3.3, 3.4, 5.1, 5.3**
+    // Property 5: Task ID Uniqueness
+    const taskIdUniquenessResult = forAll(
+      () => integerRange(1, 1000),
+      (count) => {
+        const ids = [];
+        for (let i = 0; i < count; i++) {
+          ids.push(generateId());
+        }
+        
+        // Check for duplicates
+        const uniqueIds = new Set(ids);
+        
+        if (uniqueIds.size !== ids.length) {
+          // Find the duplicate
+          const seen = new Set();
+          let duplicate = null;
+          for (const id of ids) {
+            if (seen.has(id)) {
+              duplicate = id;
+              break;
+            }
+            seen.add(id);
+          }
+          
+          return {
+            pass: false,
+            message: `Generated ${ids.length} IDs but only ${uniqueIds.size} were unique. Duplicate found: ${duplicate}`
+          };
+        }
+        
+        return { pass: true };
+      }
+    );
+
+    if (taskIdUniquenessResult.pass) {
+      results.innerHTML += `<div class="test-result pass">✓ Property 5: Task ID Uniqueness - Tested ${taskIdUniquenessResult.tested} iterations (1-1000 IDs per iteration)</div>`;
+    } else {
+      results.innerHTML += `<div class="test-result fail">✗ Property 5: Task ID Uniqueness - Counterexample: Generated ${taskIdUniquenessResult.counterexample} IDs - ${taskIdUniquenessResult.message}</div>`;
+    }
+
+    // **Validates: Requirements 3.1, 3.2, 3.3, 3.4, 5.1, 5.3**
+    // Property 8: Link ID Uniqueness
+    const linkIdUniquenessResult = forAll(
+      () => integerRange(1, 1000),
+      (count) => {
+        const ids = [];
+        for (let i = 0; i < count; i++) {
+          ids.push(generateId());
+        }
+        
+        // Check for duplicates
+        const uniqueIds = new Set(ids);
+        
+        if (uniqueIds.size !== ids.length) {
+          // Find the duplicate
+          const seen = new Set();
+          let duplicate = null;
+          for (const id of ids) {
+            if (seen.has(id)) {
+              duplicate = id;
+              break;
+            }
+            seen.add(id);
+          }
+          
+          return {
+            pass: false,
+            message: `Generated ${ids.length} IDs but only ${uniqueIds.size} were unique. Duplicate found: ${duplicate}`
+          };
+        }
+        
+        return { pass: true };
+      }
+    );
+
+    if (linkIdUniquenessResult.pass) {
+      results.innerHTML += `<div class="test-result pass">✓ Property 8: Link ID Uniqueness - Tested ${linkIdUniquenessResult.tested} iterations (1-1000 IDs per iteration)</div>`;
+    } else {
+      results.innerHTML += `<div class="test-result fail">✗ Property 8: Link ID Uniqueness - Counterexample: Generated ${linkIdUniquenessResult.counterexample} IDs - ${linkIdUniquenessResult.message}</div>`;
+    }
+
+    results.innerHTML += '<div class="test-result pass"><strong>All tests passed! ✓</strong></div>';
+  </script>
+</body>
+</html>

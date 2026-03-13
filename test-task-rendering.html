@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Task Rendering</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <h1>Task Rendering Test</h1>
+    
+    <section class="tasks-section">
+        <h2>Tasks</h2>
+        <div class="task-input-container">
+            <input type="text" id="task-input" placeholder="Add a new task...">
+            <button id="add-task-btn">Add</button>
+        </div>
+        <ul id="task-list"></ul>
+    </section>
+
+    <script src="js/app.js"></script>
+    
+    <script>
+        // Test the task rendering functionality
+        console.log('Testing task rendering...');
+        
+        // Wait for initialization
+        setTimeout(() => {
+            console.log('Initial tasks:', tasks);
+            
+            // Test adding a task
+            addTask('Test task 1');
+            renderTasks();
+            console.log('After adding task 1:', tasks);
+            
+            // Test adding another task
+            addTask('Test task 2');
+            renderTasks();
+            console.log('After adding task 2:', tasks);
+            
+            // Test toggling completion
+            if (tasks.length > 0) {
+                toggleTask(tasks[0].id);
+                renderTasks();
+                console.log('After toggling first task:', tasks);
+            }
+            
+            console.log('Task rendering test complete!');
+        }, 100);
+    </script>
+</body>
+</html>

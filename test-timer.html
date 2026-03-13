@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timer Test</title>
+</head>
+<body>
+    <h1>Focus Timer Test</h1>
+    <div id="timer-display">25:00</div>
+    <button id="start-btn">Start</button>
+    <button id="stop-btn">Stop</button>
+    <button id="reset-btn">Reset</button>
+    
+    <script src="js/app.js"></script>
+    <script>
+        // Test timer functionality
+        console.log('Testing timer initialization...');
+        console.log('Initial display:', document.getElementById('timer-display').textContent);
+        console.log('Expected: 25:00');
+        
+        // Test that timer initializes correctly
+        if (document.getElementById('timer-display').textContent === '25:00') {
+            console.log('✓ Timer initialization test passed');
+        } else {
+            console.log('✗ Timer initialization test failed');
+        }
+        
+        // Test start button
+        console.log('\nTesting start button...');
+        document.getElementById('start-btn').click();
+        
+        setTimeout(() => {
+            const display = document.getElementById('timer-display').textContent;
+            console.log('Display after 2 seconds:', display);
+            
+            // Should be 24:58 or 24:57 depending on timing
+            if (display === '24:58' || display === '24:57') {
+                console.log('✓ Start button test passed');
+            } else {
+                console.log('✗ Start button test failed');
+            }
+            
+            // Test stop button
+            console.log('\nTesting stop button...');
+            document.getElementById('stop-btn').click();
+            const stoppedDisplay = document.getElementById('timer-display').textContent;
+            
+            setTimeout(() => {
+                const displayAfterStop = document.getElementById('timer-display').textContent;
+                if (stoppedDisplay === displayAfterStop) {
+                    console.log('✓ Stop button test passed (timer paused)');
+                } else {
+                    console.log('✗ Stop button test failed (timer still running)');
+                }
+                
+                // Test reset button
+                console.log('\nTesting reset button...');
+                document.getElementById('reset-btn').click();
+                const resetDisplay = document.getElementById('timer-display').textContent;
+                
+                if (resetDisplay === '25:00') {
+                    console.log('✓ Reset button test passed');
+                } else {
+                    console.log('✗ Reset button test failed');
+                }
+                
+                console.log('\n=== All timer tests completed ===');
+            }, 1500);
+        }, 2000);
+    </script>
+</body>
+</html>
