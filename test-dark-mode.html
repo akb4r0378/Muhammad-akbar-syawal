@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Mode Test - Productivity Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .test-controls {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+        }
+        [data-theme="dark"] .test-controls {
+            background: rgba(45, 45, 45, 0.9);
+            color: #e0e0e0;
+        }
+        .test-controls button {
+            margin: 5px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <main class="dashboard">
+        <!-- Theme Toggle Button -->
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">🌓</button>
+        
+        <!-- Greeting Display Component -->
+        <section class="greeting-section">
+            <div id="time-display">3:45:22 PM</div>
+            <div id="date-display">Monday, January 15, 2024</div>
+            <h1 id="greeting-message">Good Afternoon</h1>
+        </section>
+
+        <!-- Focus Timer Component -->
+        <section class="timer-section">
+            <h2>Focus Timer</h2>
+            <div id="timer-display">25:00</div>
+            <div class="timer-controls">
+                <button id="start-btn">Start</button>
+                <button id="stop-btn">Stop</button>
+                <button id="reset-btn">Reset</button>
+            </div>
+        </section>
+
+        <!-- Task List Component -->
+        <section class="tasks-section">
+            <h2>Tasks</h2>
+            <div class="task-input-container">
+                <input type="text" id="task-input" placeholder="Add a new task...">
+                <button id="add-task-btn">Add</button>
+            </div>
+            <ul id="task-list">
+                <li class="task-item">
+                    <span class="task-text">Review project documentation</span>
+                    <div class="task-buttons">
+                        <button>Complete</button>
+                        <button>Edit</button>
+                        <button>Delete</button>
+                    </div>
+                </li>
+                <li class="task-item completed">
+                    <span class="task-text">Update dependencies</span>
+                    <div class="task-buttons">
+                        <button>Undo</button>
+                        <button>Edit</button>
+                        <button>Delete</button>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Quick Links Component -->
+        <section class="links-section">
+            <h2>Quick Links</h2>
+            <div class="link-input-container">
+                <input type="text" id="link-name-input" placeholder="Link name">
+                <input type="text" id="link-url-input" placeholder="URL">
+                <button id="add-link-btn">Add Link</button>
+            </div>
+            <div id="links-container">
+                <div class="link-item">
+                    <button class="link-button">GitHub</button>
+                    <button class="link-delete-btn">×</button>
+                </div>
+                <div class="link-item">
+                    <button class="link-button">Documentation</button>
+                    <button class="link-delete-btn">×</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="test-controls">
+        <strong>Theme Test Controls:</strong><br>
+        <button onclick="document.body.setAttribute('data-theme', 'light')">Light Mode</button>
+        <button onclick="document.body.setAttribute('data-theme', 'dark')">Dark Mode</button>
+        <button onclick="document.body.removeAttribute('data-theme')">Remove Attribute</button>
+    </div>
+
+    <script>
+        // Simple theme toggle for testing
+        document.getElementById('theme-toggle').addEventListener('click', function() {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', newTheme);
+        });
+    </script>
+</body>
+</html>

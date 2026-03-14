@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Styling Test - Productivity Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <main class="dashboard">
+        <!-- Greeting Display Component -->
+        <section class="greeting-section">
+            <div id="time-display">2:45 PM</div>
+            <div id="date-display">Monday, January 15, 2024</div>
+            <h1 id="greeting-message">Good Afternoon</h1>
+        </section>
+
+        <!-- Focus Timer Component -->
+        <section class="timer-section">
+            <h2>Focus Timer</h2>
+            <div id="timer-display">25:00</div>
+            <div class="timer-controls">
+                <button id="start-btn">Start</button>
+                <button id="stop-btn">Stop</button>
+                <button id="reset-btn">Reset</button>
+            </div>
+        </section>
+
+        <!-- Task List Component -->
+        <section class="tasks-section">
+            <h2>Tasks</h2>
+            <div class="task-input-container">
+                <input type="text" id="task-input" placeholder="Add a new task...">
+                <button id="add-task-btn">Add</button>
+            </div>
+            <ul id="task-list">
+                <li class="task-item">
+                    <span class="task-text">Complete project documentation</span>
+                    <div class="task-buttons">
+                        <button>✓</button>
+                        <button>Edit</button>
+                        <button>Delete</button>
+                    </div>
+                </li>
+                <li class="task-item completed">
+                    <span class="task-text">Review pull requests</span>
+                    <div class="task-buttons">
+                        <button>✓</button>
+                        <button>Edit</button>
+                        <button>Delete</button>
+                    </div>
+                </li>
+                <li class="task-item">
+                    <span class="task-text">Update team on progress</span>
+                    <div class="task-buttons">
+                        <button>✓</button>
+                        <button>Edit</button>
+                        <button>Delete</button>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Quick Links Component -->
+        <section class="links-section">
+            <h2>Quick Links</h2>
+            <div class="link-input-container">
+                <input type="text" id="link-name-input" placeholder="Link name">
+                <input type="text" id="link-url-input" placeholder="URL">
+                <button id="add-link-btn">Add Link</button>
+            </div>
+            <div id="links-container">
+                <div class="link-item">
+                    <button class="link-button">GitHub</button>
+                    <button class="link-delete-btn">×</button>
+                </div>
+                <div class="link-item">
+                    <button class="link-button">Documentation</button>
+                    <button class="link-delete-btn">×</button>
+                </div>
+                <div class="link-item">
+                    <button class="link-button">Email</button>
+                    <button class="link-delete-btn">×</button>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

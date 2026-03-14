@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quick Task 5 Test</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .result { padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .pass { background: #d4edda; color: #155724; }
+        .fail { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>Task 5 Quick Test</h1>
+    <button onclick="runTests()">Run All Tests</button>
+    <div id="results"></div>
+    
+    <script>
+        function runTests() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<p>Running tests...</p>';
+            
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = 'index.html';
+            document.body.appendChild(iframe);
+            
+            iframe.onload = function() {
+                const doc = iframe.contentDocument;
+                const win = iframe.contentWindow;
+                let html = '';
+                
+                // Test 1: HTML elements exist
+                const elements = [
+                    'settings-panel', 'name-input', 'save-name-btn', 'name-saved-indicator',
+                    'timer-duration-input', 'save-timer-btn', 'timer-saved-indicator', 'timer-error'
+                ];
+                
+                let allFound = true;
+                elements.forEach(id => {
+                    const found = !!doc.getElementById(id);
+                    allFound = allFound && found;
+                    html += `<div class="result ${found ? 'pass' : 'fail'}">${found ? '✓' : '✗'} Element #${id}</div>`;
+                });
+                
+                // Test 2: Functions exist
+                const functions = ['initSettingsPanel', 'attachSettingsEventListeners', 'showSettingsSavedFeedback', 'showSettingsError'];
+                functions.forEach(fname => {
+                    const found = typeof win[fname] === 'function';
+                    allFound = allFound && found;
+                    html += `<div class="result ${found ? 'pass' : 'fail'}">${found ? '✓' : '✗'} Function ${fname}()</div>`;
+                });
+                
+                // Test 3: Initialization works
+                win.localStorage.setItem('userName', 'TestUser');
+                win.initSettingsPanel();
+                const nameInput = doc.getElementById('name-input');
+                const initWorks = nameInput && nameInput.value === 'TestUser';
+                html += `<div class="result ${initWorks ? 'pass' : 'fail'}">${initWorks ? '✓' : '✗'} Initialization populates fields</div>`;
+                
+                // Test 4: Feedback works
+                win.showSettingsSavedFeedback('name');
+                const indicator = doc.getElementById('name-saved-indicator');
+                const feedbackWorks = indicator && indicator.classList.contains('show');
+                html += `<div class="result ${feedbackWorks ? 'pass' : 'fail'}">${feedbackWorks ? '✓' : '✗'} Success feedback displays</div>`;
+                
+                // Test 5: Error works
+                win.showSettingsError('timer', 'Test error');
+                const errorEl = doc.getElementById('timer-error');
+                const errorWorks = errorEl && errorEl.classList.contains('show');
+                html += `<div class="result ${errorWorks ? 'pass' : 'fail'}">${errorWorks ? '✓' : '✗'} Error message displays</div>`;
+                
+                // Summary
+                const allPassed = allFound && initWorks && feedbackWorks && errorWorks;
+                html += `<div class="result ${allPassed ? 'pass' : 'fail'}" style="font-weight: bold; margin-top: 20px;">
+                    ${allPassed ? '✅ ALL TESTS PASSED' : '❌ SOME TESTS FAILED'}
+                </div>`;
+                
+                results.innerHTML = html;
+                
+                // Cleanup
+                win.localStorage.removeItem('userName');
+                setTimeout(() => document.body.removeChild(iframe), 100);
+            };
+        }
+    </script>
+</body>
+</html>

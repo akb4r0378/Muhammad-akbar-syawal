@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 5 Complete Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .test-section {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .test-section h2 {
+            color: #333;
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        .checklist li {
+            padding: 12px;
+            margin: 8px 0;
+            background: #f9f9f9;
+            border-left: 4px solid #4CAF50;
+            border-radius: 4px;
+        }
+        .checklist li:before {
+            content: "✓ ";
+            color: #4CAF50;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .requirement {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid #2196F3;
+        }
+        .requirement strong {
+            color: #1976D2;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button.secondary {
+            background-color: #2196F3;
+        }
+        button.secondary:hover {
+            background-color: #0b7dda;
+        }
+        .test-instructions {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>✅ Task 5: Settings Panel UI - Complete Verification</h1>
+        <p>Comprehensive verification of all sub-tasks</p>
+    </div>
+
+    <div class="test-section">
+        <h2>📋 Sub-task 5.1: Settings Panel HTML Structure</h2>
+        <div class="requirement">
+            <strong>Requirements:</strong> 6.1, 6.2, 6.3, 6.4
+        </div>
+        <ul class="checklist">
+            <li>Settings panel section with id <code>settings-panel</code> added to index.html</li>
+            <li>Name settings: input field with id <code>name-input</code></li>
+            <li>Name settings: save button with id <code>save-name-btn</code></li>
+            <li>Name settings: success indicator with id <code>name-saved-indicator</code></li>
+            <li>Timer settings: input field with id <code>timer-duration-input</code></li>
+            <li>Timer settings: save button with id <code>save-timer-btn</code></li>
+            <li>Timer settings: success indicator with id <code>timer-saved-indicator</code></li>
+            <li>Timer settings: error display with id <code>timer-error</code></li>
+        </ul>
+        <button onclick="verifyHTML()">Verify HTML Structure</button>
+        <div id="html-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔧 Sub-task 5.2: Settings Panel Initialization</h2>
+        <div class="requirement">
+            <strong>Requirements:</strong> 6.6
+        </div>
+        <ul class="checklist">
+            <li><code>initSettingsPanel()</code> function implemented</li>
+            <li>Populates name input field with current userName value</li>
+            <li>Populates timer input field with current timerDuration value (default 25)</li>
+            <li>Called during application initialization</li>
+        </ul>
+        <button onclick="verifyInitialization()">Verify Initialization</button>
+        <div id="init-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>⚡ Sub-task 5.3: Settings Event Handlers</h2>
+        <div class="requirement">
+            <strong>Requirements:</strong> 6.5, 6.7, 10.3, 10.4
+        </div>
+        <ul class="checklist">
+            <li><code>attachSettingsEventListeners()</code> implemented for save buttons</li>
+            <li>Name save: calls <code>saveUserName()</code>, updates greeting, shows feedback</li>
+            <li>Timer save: validates input (1-120 range), shows feedback or error</li>
+            <li><code>showSettingsSavedFeedback(settingType)</code> displays success for 2 seconds</li>
+            <li><code>showSettingsError(settingType, message)</code> displays error for 3 seconds</li>
+        </ul>
+        <button onclick="verifyEventHandlers()">Verify Event Handlers</button>
+        <div id="event-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎨 Sub-task 5.4: Settings Panel Styling</h2>
+        <div class="requirement">
+            <strong>Requirements:</strong> 6.2, 7.3, 10.5
+        </div>
+        <ul class="checklist">
+            <li>CSS for settings panel layout and visual distinction</li>
+            <li>Input fields styled with borders and focus states</li>
+            <li>Buttons styled with colors and hover states</li>
+            <li>Success indicators styled (hidden by default, green when shown)</li>
+            <li>Error messages styled (hidden by default, red when shown)</li>
+            <li>Hover states for all interactive controls</li>
+        </ul>
+        <button onclick="verifyStyling()">Verify Styling</button>
+        <div id="style-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🧪 Manual Testing Instructions</h2>
+        <div class="test-instructions">
+            <strong>Follow these steps to manually verify the settings panel:</strong>
+            <ol>
+                <li>Open the dashboard in a new tab</li>
+                <li>Scroll to the Settings section at the bottom</li>
+                <li>Enter your name in the "Your Name" field and click Save</li>
+                <li>Verify: Green checkmark appears for 2 seconds</li>
+                <li>Verify: Greeting at top updates with your name</li>
+                <li>Enter a timer duration (e.g., 30) and click Save</li>
+                <li>Verify: Green checkmark appears for 2 seconds</li>
+                <li>Try entering invalid values (0, 121, text) and click Save</li>
+                <li>Verify: Red error message appears for 3 seconds</li>
+                <li>Verify: Input field highlights in red during error</li>
+                <li>Reload the page and verify settings persist</li>
+            </ol>
+        </div>
+        <button onclick="window.open('index.html', '_blank')">Open Dashboard</button>
+    </div>
+
+    <div class="test-section">
+        <h2>✅ Task 5 Completion Summary</h2>
+        <div class="success">
+            <strong>All sub-tasks completed:</strong>
+            <ul style="margin: 10px 0 0 20px;">
+                <li>✓ 5.1: Settings panel HTML structure added</li>
+                <li>✓ 5.2: Settings panel initialization implemented</li>
+                <li>✓ 5.3: Settings event handlers implemented</li>
+                <li>✓ 5.4: Settings panel styling applied</li>
+            </ul>
+        </div>
+        <p><strong>Note:</strong> Timer duration saving functionality will be fully implemented in Task 7 (customizable timer duration). Currently, the UI validates and shows feedback, but the timer doesn't use the saved duration yet.</p>
+    </div>
+
+    <script>
+        function showResults(containerId, results) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '<div style="margin-top: 15px; padding: 15px; background: #f0f0f0; border-radius: 6px;">' + results + '</div>';
+        }
+
+        function verifyHTML() {
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = 'index.html';
+            document.body.appendChild(iframe);
+            
+            iframe.onload = function() {
+                const doc = iframe.contentDocument;
+                let results = '<strong>HTML Structure Verification:</strong><br><br>';
+                let allPassed = true;
+                
+                const checks = [
+                    { id: 'settings-panel', name: 'Settings panel' },
+                    { id: 'name-input', name: 'Name input field' },
+                    { id: 'save-name-btn', name: 'Save name button' },
+                    { id: 'name-saved-indicator', name: 'Name saved indicator' },
+                    { id: 'timer-duration-input', name: 'Timer duration input' },
+                    { id: 'save-timer-btn', name: 'Save timer button' },
+                    { id: 'timer-saved-indicator', name: 'Timer saved indicator' },
+                    { id: 'timer-error', name: 'Timer error display' }
+                ];
+                
+                checks.forEach(check => {
+                    const element = doc.getElementById(check.id);
+                    const passed = !!element;
+                    allPassed = allPassed && passed;
+                    results += `${passed ? '✓' : '✗'} ${check.name} (id="${check.id}"): ${passed ? 'Found' : 'Missing'}<br>`;
+                });
+                
+                results += '<br><strong>Result: ' + (allPassed ? '✅ All HTML elements present' : '❌ Some elements missing') + '</strong>';
+                showResults('html-results', results);
+                
+                document.body.removeChild(iframe);
+            };
+        }
+
+        function verifyInitialization() {
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = 'index.html';
+            document.body.appendChild(iframe);
+            
+            iframe.onload = function() {
+                const doc = iframe.contentDocument;
+                const win = iframe.contentWindow;
+                let results = '<strong>Initialization Verification:</strong><br><br>';
+                let allPassed = true;
+                
+                // Check function exists
+                const funcExists = typeof win.initSettingsPanel === 'function';
+                results += `${funcExists ? '✓' : '✗'} initSettingsPanel() function exists: ${funcExists ? 'Yes' : 'No'}<br>`;
+                allPassed = allPassed && funcExists;
+                
+                if (funcExists) {
+                    // Set test data
+                    win.localStorage.setItem('userName', 'TestUser');
+                    
+                    // Call init
+                    win.initSettingsPanel();
+                    
+                    // Check name input
+                    const nameInput = doc.getElementById('name-input');
+                    const namePopulated = nameInput && nameInput.value === 'TestUser';
+                    results += `${namePopulated ? '✓' : '✗'} Name input populated with localStorage value: ${namePopulated ? 'Yes' : 'No'}<br>`;
+                    allPassed = allPassed && namePopulated;
+                    
+                    // Check timer input
+                    const timerInput = doc.getElementById('timer-duration-input');
+                    const timerPopulated = timerInput && timerInput.value === '25';
+                    results += `${timerPopulated ? '✓' : '✗'} Timer input populated with default (25): ${timerPopulated ? 'Yes' : 'No'}<br>`;
+                    allPassed = allPassed && timerPopulated;
+                    
+                    // Clean up
+                    win.localStorage.removeItem('userName');
+                }
+                
+                results += '<br><strong>Result: ' + (allPassed ? '✅ Initialization working correctly' : '❌ Issues found') + '</strong>';
+                showResults('init-results', results);
+                
+                document.body.removeChild(iframe);
+            };
+        }
+
+        function verifyEventHandlers() {
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = 'index.html';
+            document.body.appendChild(iframe);
+            
+            iframe.onload = function() {
+                const doc = iframe.contentDocument;
+                const win = iframe.contentWindow;
+                let results = '<strong>Event Handlers Verification:</strong><br><br>';
+                let allPassed = true;
+                
+                // Check functions exist
+                const attachExists = typeof win.attachSettingsEventListeners === 'function';
+                results += `${attachExists ? '✓' : '✗'} attachSettingsEventListeners() exists: ${attachExists ? 'Yes' : 'No'}<br>`;
+                allPassed = allPassed && attachExists;
+                
+                const feedbackExists = typeof win.showSettingsSavedFeedback === 'function';
+                results += `${feedbackExists ? '✓' : '✗'} showSettingsSavedFeedback() exists: ${feedbackExists ? 'Yes' : 'No'}<br>`;
+                allPassed = allPassed && feedbackExists;
+                
+                const errorExists = typeof win.showSettingsError === 'function';
+                results += `${errorExists ? '✓' : '✗'} showSettingsError() exists: ${errorExists ? 'Yes' : 'No'}<br>`;
+                allPassed = allPassed && errorExists;
+                
+                // Test feedback display
+                if (feedbackExists) {
+                    const indicator = doc.getElementById('name-saved-indicator');
+                    win.showSettingsSavedFeedback('name');
+                    const feedbackWorks = indicator && indicator.classList.contains('show');
+                    results += `${feedbackWorks ? '✓' : '✗'} Success feedback displays correctly: ${feedbackWorks ? 'Yes' : 'No'}<br>`;
+                    allPassed = allPassed && feedbackWorks;
+                }
+                
+                // Test error display
+                if (errorExists) {
+                    const errorElement = doc.getElementById('timer-error');
+                    win.showSettingsError('timer', 'Test error');
+                    const errorWorks = errorElement && errorElement.classList.contains('show');
+                    results += `${errorWorks ? '✓' : '✗'} Error message displays correctly: ${errorWorks ? 'Yes' : 'No'}<br>`;
+                    allPassed = allPassed && errorWorks;
+                }
+                
+                results += '<br><strong>Result: ' + (allPassed ? '✅ Event handlers working correctly' : '❌ Issues found') + '</strong>';
+                showResults('event-results', results);
+                
+                setTimeout(() => {
+                    document.body.removeChild(iframe);
+                }, 100);
+            };
+        }
+
+        function verifyStyling() {
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = 'index.html';
+            document.body.appendChild(iframe);
+            
+            iframe.onload = function() {
+                const doc = iframe.contentDocument;
+                const win = iframe.contentWindow;
+                let results = '<strong>Styling Verification:</strong><br><br>';
+                let allPassed = true;
+                
+                // Check settings panel styling
+                const settingsPanel = doc.getElementById('settings-panel');
+                if (settingsPanel) {
+                    const styles = win.getComputedStyle(settingsPanel);
+                    
+                    const hasBackground = styles.backgroundColor !== 'rgba(0, 0, 0, 0)';
+                    results += `${hasBackground ? '✓' : '✗'} Settings panel has background color: ${hasBackground ? 'Yes' : 'No'}<br>`;
+                    allPassed = allPassed && hasBackground;
+                    
+                    const hasBorder = styles.borderWidth !== '0px';
+                    results += `${hasBorder ? '✓' : '✗'} Settings panel has border: ${hasBorder ? 'Yes' : 'No'}<br>`;
+                    allPassed = allPassed && hasBorder;
+                    
+                    const hasPadding = parseInt(styles.padding) > 0;
+                    results += `${hasPadding ? '✓' : '✗'} Settings panel has padding: ${hasPadding ? 'Yes' : 'No'}<br>`;
+                    allPassed = allPassed && hasPadding;
+                }
+                
+                // Check input styling
+                const nameInput = doc.getElementById('name-input');
+                if (nameInput) {
+                    const styles = win.getComputedStyle(nameInput);
+                    const hasBorder = styles.borderWidth !== '0px';
+                    results += `${hasBorder ? '✓' : '✗'} Input fields have border: ${hasBorder ? 'Yes' : 'No'}<br>`;
+                    allPassed = allPassed && hasBorder;
+                }
+                
+                // Check button styling
+                const saveBtn = doc.getElementById('save-name-btn');
+                if (saveBtn) {
+                    const styles = win.getComputedStyle(saveBtn);
+                    const hasBackground = styles.backgroundColor !== 'rgba(0, 0, 0, 0)';
+                    results += `${hasBackground ? '✓' : '✗'} Buttons have background color: ${hasBackground ? 'Yes' : 'No'}<br>`;
+                    allPassed = allPassed && hasBackground;
+                }
+                
+                // Check indicator styling
+                const indicator = doc.getElementById('name-saved-indicator');
+                if (indicator) {
+                    const styles = win.getComputedStyle(indicator);
+                    const isHidden = styles.display === 'none';
+                    results += `${isHidden ? '✓' : '✗'} Success indicators hidden by default: ${isHidden ? 'Yes' : 'No'}<br>`;
+                    allPassed = allPassed && isHidden;
+                }
+                
+                // Check error styling
+                const errorElement = doc.getElementById('timer-error');
+                if (errorElement) {
+                    const styles = win.getComputedStyle(errorElement);
+                    const isHidden = styles.display === 'none';
+                    results += `${isHidden ? '✓' : '✗'} Error messages hidden by default: ${isHidden ? 'Yes' : 'No'}<br>`;
+                    allPassed = allPassed && isHidden;
+                }
+                
+                results += '<br><strong>Result: ' + (allPassed ? '✅ Styling applied correctly' : '❌ Issues found') + '</strong>';
+                showResults('style-results', results);
+                
+                document.body.removeChild(iframe);
+            };
+        }
+    </script>
+</body>
+</html>

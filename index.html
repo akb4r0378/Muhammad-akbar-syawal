@@ -8,6 +8,9 @@
 </head>
 <body>
     <main class="dashboard">
+        <!-- Theme Toggle Button -->
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">🌓</button>
+        
         <!-- Greeting Display Component -->
         <section class="greeting-section">
             <div id="time-display"></div>
@@ -45,6 +48,32 @@
                 <button id="add-link-btn">Add Link</button>
             </div>
             <div id="links-container"></div>
+        </section>
+
+        <!-- Settings Panel Component -->
+        <section id="settings-panel" class="settings-section">
+            <h2>Settings</h2>
+            
+            <!-- Name Settings -->
+            <div class="settings-group">
+                <label for="name-input">Your Name</label>
+                <div class="settings-input-container">
+                    <input type="text" id="name-input" placeholder="Enter your name">
+                    <button id="save-name-btn">Save</button>
+                    <span id="name-saved-indicator" class="saved-indicator">✓ Saved</span>
+                </div>
+            </div>
+            
+            <!-- Timer Duration Settings -->
+            <div class="settings-group">
+                <label for="timer-duration-input">Timer Duration (minutes)</label>
+                <div class="settings-input-container">
+                    <input type="number" id="timer-duration-input" placeholder="25" min="1" max="120">
+                    <button id="save-timer-btn">Save</button>
+                    <span id="timer-saved-indicator" class="saved-indicator">✓ Saved</span>
+                </div>
+                <div id="timer-error" class="error-message"></div>
+            </div>
         </section>
     </main>
 

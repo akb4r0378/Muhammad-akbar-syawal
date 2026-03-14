@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 4.2 Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .pass {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .fail {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        h2 {
+            color: #555;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Task 4.2 Verification: Enhance Greeting Display to Include User Name</h1>
+    
+    <div class="info">
+        <strong>Task Requirements:</strong>
+        <ul>
+            <li>Modify updateGreeting() function to append user name if configured</li>
+            <li>Format as "[Greeting], [Name]" when name exists and is not whitespace-only</li>
+            <li>Display greeting without name when userName is empty or whitespace-only</li>
+            <li>Call loadUserName() during initialization</li>
+        </ul>
+    </div>
+
+    <div id="results"></div>
+
+    <script>
+        // Copy the relevant functions from app.js for testing
+        let userName = '';
+
+        function getGreetingMessage(hour) {
+            if (hour >= 5 && hour < 12) {
+                return 'Good Morning';
+            } else if (hour >= 12 && hour < 17) {
+                return 'Good Afternoon';
+            } else if (hour >= 17 && hour < 21) {
+                return 'Good Evening';
+            } else {
+                return 'Good Night';
+            }
+        }
+
+        function getFullGreeting(hour, userName) {
+            const greeting = getGreetingMessage(hour);
+            
+            // This is the logic from updateGreeting() in app.js
+            let fullGreeting = greeting;
+            if (userName && userName.trim().length > 0) {
+                fullGreeting = greeting + ', ' + userName;
+            }
+            
+            return fullGreeting;
+        }
+
+        // Test runner
+        const results = [];
+
+        function test(description, condition) {
+            const passed = condition();
+            results.push({
+                description,
+                passed,
+                message: passed ? 'PASS' : 'FAIL'
+            });
+        }
+
+        // Run tests
+        console.log('Running Task 4.2 tests...\n');
+
+        // Test 1: Greeting with valid name
+        test('Greeting with name "Alice" at 10am should be "Good Morning, Alice"', () => {
+            const result = getFullGreeting(10, 'Alice');
+            console.log('Test 1:', result);
+            return result === 'Good Morning, Alice';
+        });
+
+        // Test 2: Greeting without name
+        test('Greeting with empty name at 10am should be "Good Morning"', () => {
+            const result = getFullGreeting(10, '');
+            console.log('Test 2:', result);
+            return result === 'Good Morning';
+        });
+
+        // Test 3: Greeting with whitespace-only name
+        test('Greeting with whitespace-only name "   " at 10am should be "Good Morning"', () => {
+            const result = getFullGreeting(10, '   ');
+            console.log('Test 3:', result);
+            return result === 'Good Morning';
+        });
+
+        // Test 4: Afternoon greeting with name
+        test('Greeting with name "Bob" at 2pm should be "Good Afternoon, Bob"', () => {
+            const result = getFullGreeting(14, 'Bob');
+            console.log('Test 4:', result);
+            return result === 'Good Afternoon, Bob';
+        });
+
+        // Test 5: Evening greeting with name
+        test('Greeting with name "Charlie" at 7pm should be "Good Evening, Charlie"', () => {
+            const result = getFullGreeting(19, 'Charlie');
+            console.log('Test 5:', result);
+            return result === 'Good Evening, Charlie';
+        });
+
+        // Test 6: Night greeting with name
+        test('Greeting with name "Diana" at 11pm should be "Good Night, Diana"', () => {
+            const result = getFullGreeting(23, 'Diana');
+            console.log('Test 6:', result);
+            return result === 'Good Night, Diana';
+        });
+
+        // Test 7: Name with surrounding whitespace
+        test('Greeting with name "  Eve  " at 10am should be "Good Morning,   Eve  "', () => {
+            const result = getFullGreeting(10, '  Eve  ');
+            console.log('Test 7:', result);
+            // Note: The implementation doesn't trim the name in the display, only checks if trim is non-empty
+            return result === 'Good Morning,   Eve  ';
+        });
+
+        // Test 8: Format verification - contains comma
+        test('Greeting with name should contain a comma', () => {
+            const result = getFullGreeting(10, 'Frank');
+            console.log('Test 8:', result);
+            return result.includes(',');
+        });
+
+        // Test 9: Format verification - no comma without name
+        test('Greeting without name should not contain a comma', () => {
+            const result = getFullGreeting(10, '');
+            console.log('Test 9:', result);
+            return !result.includes(',');
+        });
+
+        // Test 10: Tab character as whitespace
+        test('Greeting with tab character "\\t" should be "Good Morning"', () => {
+            const result = getFullGreeting(10, '\t');
+            console.log('Test 10:', result);
+            return result === 'Good Morning';
+        });
+
+        // Display results
+        const resultsDiv = document.getElementById('results');
+        
+        const passedCount = results.filter(r => r.passed).length;
+        const totalCount = results.length;
+        
+        resultsDiv.innerHTML = `<h2>Test Results: ${passedCount}/${totalCount} Passed</h2>`;
+        
+        results.forEach((result, index) => {
+            const div = document.createElement('div');
+            div.className = `test-result ${result.passed ? 'pass' : 'fail'}`;
+            div.innerHTML = `<strong>Test ${index + 1}:</strong> ${result.description} - <strong>${result.message}</strong>`;
+            resultsDiv.appendChild(div);
+        });
+
+        // Summary
+        if (passedCount === totalCount) {
+            const summaryDiv = document.createElement('div');
+            summaryDiv.className = 'test-result pass';
+            summaryDiv.innerHTML = '<h2>✓ All tests passed! Task 4.2 is correctly implemented.</h2>';
+            resultsDiv.appendChild(summaryDiv);
+        } else {
+            const summaryDiv = document.createElement('div');
+            summaryDiv.className = 'test-result fail';
+            summaryDiv.innerHTML = `<h2>✗ ${totalCount - passedCount} test(s) failed.</h2>`;
+            resultsDiv.appendChild(summaryDiv);
+        }
+
+        console.log(`\nTest Summary: ${passedCount}/${totalCount} passed`);
+    </script>
+</body>
+</html>

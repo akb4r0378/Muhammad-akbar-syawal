@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 10 Final Verification</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .verification-panel {
+            background: #e8f5e9;
+            border: 2px solid #4CAF50;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 8px;
+        }
+        .verification-panel h2 {
+            color: #2e7d32;
+            margin-top: 0;
+        }
+        .test-instructions {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 4px solid #4CAF50;
+        }
+        .test-instructions h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .test-instructions ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .test-instructions li {
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="verification-panel">
+        <h2>✓ Task 10 Implementation Complete</h2>
+        <p><strong>All subtasks have been implemented:</strong></p>
+        <ul>
+            <li>✓ Task 10.1: Task reordering functions (moveTaskUp, moveTaskDown)</li>
+            <li>✓ Task 10.2: Move up/down buttons in task UI</li>
+            <li>✓ Task 10.3: CSS styling for move buttons</li>
+        </ul>
+
+        <div class="test-instructions">
+            <h3>Manual Verification Steps:</h3>
+            <ol>
+                <li>Add at least 3 tasks using the input field below</li>
+                <li>Click the ↑ button on the second task - it should move above the first task</li>
+                <li>Click the ↓ button on the first task - it should move below the second task</li>
+                <li>Try clicking ↑ on the topmost task - nothing should happen (boundary check)</li>
+                <li>Try clicking ↓ on the bottommost task - nothing should happen (boundary check)</li>
+                <li>Reload the page - task order should be preserved (persistence check)</li>
+            </ol>
+        </div>
+
+        <div class="test-instructions">
+            <h3>Expected Behavior:</h3>
+            <ul>
+                <li>Each task has ↑ and ↓ buttons</li>
+                <li>Buttons have consistent styling with other task buttons</li>
+                <li>Buttons have hover effects</li>
+                <li>Task order changes immediately when buttons are clicked</li>
+                <li>Task order persists after page reload</li>
+            </ul>
+        </div>
+    </div>
+
+    <main class="dashboard">
+        <!-- Theme Toggle Button -->
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">🌓</button>
+        
+        <!-- Task List Component -->
+        <section class="tasks-section">
+            <h2>Tasks - Test Task Sorting</h2>
+            <div class="task-input-container">
+                <input type="text" id="task-input" placeholder="Add a new task...">
+                <button id="add-task-btn">Add</button>
+            </div>
+            <ul id="task-list"></ul>
+        </section>
+    </main>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

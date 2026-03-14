@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Task 4: Custom Name in Greeting</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .pass { color: green; font-weight: bold; }
+        .fail { color: red; font-weight: bold; }
+        button {
+            margin: 5px;
+            padding: 8px 15px;
+        }
+        #greeting-display {
+            font-size: 24px;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Task 4: Custom Name in Greeting</h1>
+    
+    <div class="test-section">
+        <h2>Manual Test Controls</h2>
+        <div>
+            <label>User Name: <input type="text" id="name-input" placeholder="Enter name"></label>
+            <button onclick="testSetName()">Set Name</button>
+            <button onclick="testClearName()">Clear Name</button>
+            <button onclick="testWhitespaceName()">Set Whitespace Name</button>
+        </div>
+        <div id="greeting-display"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Automated Tests</h2>
+        <button onclick="runAllTests()">Run All Tests</button>
+        <div id="test-results"></div>
+    </div>
+
+    <script>
+        // Import the functions we need to test
+        let userName = '';
+
+        function loadUserName() {
+            try {
+                const storedName = localStorage.getItem('userName');
+                userName = storedName || '';
+            } catch (e) {
+                console.error('Failed to load user name from localStorage:', e);
+                userName = '';
+            }
+        }
+
+        function saveUserName(name) {
+            try {
+                localStorage.setItem('userName', name);
+                userName = name;
+            } catch (e) {
+                console.error('Failed to save user name to localStorage:', e);
+            }
+        }
+
+        function getGreetingMessage(hour) {
+            if (hour >= 5 && hour < 12) {
+                return 'Good Morning';
+            } else if (hour >= 12 && hour < 17) {
+                return 'Good Afternoon';
+            } else if (hour >= 17 && hour < 21) {
+                return 'Good Evening';
+            } else {
+                return 'Good Night';
+            }
+        }
+
+        function getFullGreeting() {
+            const now = new Date();
+            const greeting = getGreetingMessage(now.getHours());
+            
+            let fullGreeting = greeting;
+            if (userName && userName.trim().length > 0) {
+                fullGreeting = greeting + ', ' + userName;
+            }
+            
+            return fullGreeting;
+        }
+
+        function updateDisplay() {
+            document.getElementById('greeting-display').textContent = getFullGreeting();
+        }
+
+        // Manual test functions
+        function testSetName() {
+            const name = document.getElementById('name-input').value;
+            saveUserName(name);
+            updateDisplay();
+        }
+
+        function testClearName() {
+            saveUserName('');
+            document.getElementById('name-input').value = '';
+            updateDisplay();
+        }
+
+        function testWhitespaceName() {
+            saveUserName('   ');
+            document.getElementById('name-input').value = '   ';
+            updateDisplay();
+        }
+
+        // Automated tests
+        function runAllTests() {
+            const results = [];
+            
+            // Test 1: Load and save user name
+            localStorage.removeItem('userName');
+            loadUserName();
+            results.push({
+                name: 'Test 1: Load with no stored name returns empty string',
+                pass: userName === ''
+            });
+
+            // Test 2: Save and load user name
+            saveUserName('Alice');
+            loadUserName();
+            results.push({
+                name: 'Test 2: Save and load user name',
+                pass: userName === 'Alice'
+            });
+
+            // Test 3: Greeting without name
+            userName = '';
+            const greetingWithoutName = getFullGreeting();
+            const hasNoComma = !greetingWithoutName.includes(',');
+            results.push({
+                name: 'Test 3: Greeting without name has no comma',
+                pass: hasNoComma
+            });
+
+            // Test 4: Greeting with name
+            userName = 'Bob';
+            const greetingWithName = getFullGreeting();
+            const hasCommaAndName = greetingWithName.includes(', Bob');
+            results.push({
+                name: 'Test 4: Greeting with name includes ", [Name]"',
+                pass: hasCommaAndName
+            });
+
+            // Test 5: Whitespace-only name treated as empty
+            userName = '   ';
+            const greetingWithWhitespace = getFullGreeting();
+            const whitespaceHasNoComma = !greetingWithWhitespace.includes(',');
+            results.push({
+                name: 'Test 5: Whitespace-only name treated as empty',
+                pass: whitespaceHasNoComma
+            });
+
+            // Test 6: Persistence round-trip
+            saveUserName('Charlie');
+            loadUserName();
+            results.push({
+                name: 'Test 6: Persistence round-trip',
+                pass: userName === 'Charlie'
+            });
+
+            // Test 7: Format verification
+            userName = 'Diana';
+            const now = new Date();
+            const expectedGreeting = getGreetingMessage(now.getHours());
+            const actualGreeting = getFullGreeting();
+            const correctFormat = actualGreeting === expectedGreeting + ', Diana';
+            results.push({
+                name: 'Test 7: Greeting format is "[Greeting], [Name]"',
+                pass: correctFormat
+            });
+
+            // Display results
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<h3>Test Results:</h3>';
+            results.forEach(result => {
+                const className = result.pass ? 'pass' : 'fail';
+                const status = result.pass ? 'PASS' : 'FAIL';
+                resultsDiv.innerHTML += `<div class="${className}">${status}: ${result.name}</div>`;
+            });
+
+            const passCount = results.filter(r => r.pass).length;
+            resultsDiv.innerHTML += `<div style="margin-top: 15px; font-weight: bold;">
+                ${passCount} / ${results.length} tests passed
+            </div>`;
+
+            // Restore display
+            loadUserName();
+            updateDisplay();
+        }
+
+        // Initialize
+        loadUserName();
+        updateDisplay();
+    </script>
+</body>
+</html>

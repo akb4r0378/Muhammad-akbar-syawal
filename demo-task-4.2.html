@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 4.2 Demo: Greeting with User Name</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .greeting-display {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        #greeting-message {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        #time-display {
+            font-size: 1.5em;
+            margin: 10px 0;
+        }
+        #date-display {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .controls {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+        }
+        .control-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .examples {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        .example-btn {
+            background: #2196F3;
+            margin: 5px;
+            padding: 8px 15px;
+            font-size: 0.9em;
+        }
+        .example-btn:hover {
+            background: #0b7dda;
+        }
+        .info {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎉 Task 4.2 Demo: Personalized Greeting</h1>
+        
+        <div class="greeting-display">
+            <div id="time-display"></div>
+            <div id="date-display"></div>
+            <h1 id="greeting-message"></h1>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="name-input">Enter Your Name:</label>
+                <input type="text" id="name-input" placeholder="e.g., Alice, Bob, Charlie">
+                <button onclick="updateName()">Update Greeting</button>
+            </div>
+
+            <div class="examples">
+                <strong>Try these examples:</strong><br>
+                <button class="example-btn" onclick="setName('Alice')">Alice</button>
+                <button class="example-btn" onclick="setName('Bob')">Bob</button>
+                <button class="example-btn" onclick="setName('Charlie')">Charlie</button>
+                <button class="example-btn" onclick="setName('')">Empty Name</button>
+                <button class="example-btn" onclick="setName('   ')">Whitespace Only</button>
+            </div>
+
+            <div class="info">
+                <strong>Implementation Details:</strong>
+                <ul>
+                    <li>✓ Format: "[Greeting], [Name]" when name is valid</li>
+                    <li>✓ Displays greeting only when name is empty or whitespace-only</li>
+                    <li>✓ Greeting changes based on time of day (Morning, Afternoon, Evening, Night)</li>
+                    <li>✓ Updates every second with current time</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Implementation from app.js
+        let userName = '';
+
+        function padZero(num) {
+            return num < 10 ? '0' + num : num.toString();
+        }
+
+        function getGreetingMessage(hour) {
+            if (hour >= 5 && hour < 12) {
+                return 'Good Morning';
+            } else if (hour >= 12 && hour < 17) {
+                return 'Good Afternoon';
+            } else if (hour >= 17 && hour < 21) {
+                return 'Good Evening';
+            } else {
+                return 'Good Night';
+            }
+        }
+
+        function updateGreeting() {
+            const now = new Date();
+            
+            // Format time in 12-hour format with AM/PM
+            let hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            const timeString = hours + ':' + padZero(minutes) + ':' + padZero(seconds) + ' ' + ampm;
+            
+            // Format date
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const dateString = now.toLocaleDateString('en-US', options);
+            
+            // Get greeting message
+            const greeting = getGreetingMessage(now.getHours());
+            
+            // Append user name if configured (TASK 4.2 IMPLEMENTATION)
+            let fullGreeting = greeting;
+            if (userName && userName.trim().length > 0) {
+                fullGreeting = greeting + ', ' + userName;
+            }
+            
+            // Update DOM
+            document.getElementById('time-display').textContent = timeString;
+            document.getElementById('date-display').textContent = dateString;
+            document.getElementById('greeting-message').textContent = fullGreeting;
+        }
+
+        function updateName() {
+            const input = document.getElementById('name-input');
+            userName = input.value;
+            updateGreeting();
+        }
+
+        function setName(name) {
+            userName = name;
+            document.getElementById('name-input').value = name;
+            updateGreeting();
+        }
+
+        // Initialize
+        updateGreeting();
+        setInterval(updateGreeting, 1000);
+
+        // Load from localStorage if available
+        try {
+            const stored = localStorage.getItem('userName');
+            if (stored) {
+                userName = stored;
+                document.getElementById('name-input').value = stored;
+            }
+        } catch (e) {
+            console.log('localStorage not available');
+        }
+    </script>
+</body>
+</html>

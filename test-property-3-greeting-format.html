@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Property 3: Greeting Format with Name - Test Runner</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    
+    h1 {
+      color: #333;
+      border-bottom: 3px solid #4CAF50;
+      padding-bottom: 10px;
+    }
+    
+    h2 {
+      color: #555;
+      margin-top: 30px;
+    }
+    
+    .test-section {
+      background: white;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .pass {
+      color: #4CAF50;
+      font-weight: bold;
+    }
+    
+    .fail {
+      color: #f44336;
+      font-weight: bold;
+    }
+    
+    .test-result {
+      margin: 10px 0;
+      padding: 10px;
+      border-left: 4px solid #ddd;
+      background: #f9f9f9;
+    }
+    
+    .test-result.pass {
+      border-left-color: #4CAF50;
+    }
+    
+    .test-result.fail {
+      border-left-color: #f44336;
+    }
+    
+    pre {
+      background: #f4f4f4;
+      padding: 10px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    
+    .summary {
+      background: #e8f5e9;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      font-size: 18px;
+    }
+    
+    .summary.fail {
+      background: #ffebee;
+    }
+  </style>
+</head>
+<body>
+  <h1>Property 3: Greeting Format with Name</h1>
+  <p><strong>Feature:</strong> dashboard-enhancements</p>
+  <p><strong>Validates:</strong> Requirements 2.2, 2.3</p>
+  
+  <div class="test-section">
+    <h2>Property Statement</h2>
+    <p>For any non-empty, non-whitespace user name and any valid greeting message, the displayed greeting should be in the format "[Greeting], [Name]".</p>
+  </div>
+  
+  <div class="test-section">
+    <h2>Test Results</h2>
+    <div id="test-output"></div>
+  </div>
+  
+  <script>
+    // Utility Functions
+    function getGreetingMessage(hour) {
+      if (hour >= 5 && hour < 12) {
+        return 'Good Morning';
+      } else if (hour >= 12 && hour < 17) {
+        return 'Good Afternoon';
+      } else if (hour >= 17 && hour < 21) {
+        return 'Good Evening';
+      } else {
+        return 'Good Night';
+      }
+    }
+    
+    function testGetFullGreeting(hour, userName) {
+      const greeting = getGreetingMessage(hour);
+      
+      let fullGreeting = greeting;
+      if (userName && userName.trim().length > 0) {
+        fullGreeting = greeting + ', ' + userName;
+      }
+      
+      return fullGreeting;
+    }
+    
+    // Property-Based Testing Framework
+    function forAll(generator, property) {
+      const results = [];
+      for (const value of generator()) {
+        const result = property(value);
+        if (!result.pass) {
+          return {
+            pass: false,
+            counterexample: value,
+            message: result.message
+          };
+        }
+        results.push(result);
+      }
+      return { pass: true, tested: results.length };
+    }
+    
+    // Generators
+    function* userNameGenerator() {
+      const names = [
+        'Alice',
+        'Bob',
+        'Charlie',
+        'Diana',
+        'Eve',
+        'Frank',
+        'Grace',
+        'Henry',
+        'Ivy',
+        'Jack',
+        'A',
+        'AB',
+        'ABC',
+        'Test User',
+        'John Doe',
+        'Jane Smith',
+        'User123',
+        'test@example.com',
+        '名前', // Japanese
+        'Имя', // Russian
+        'नाम', // Hindi
+        'اسم', // Arabic
+        '  Alice  ', // Name with surrounding whitespace
+        'Bob\t', // Name with tab
+        '\nCharlie', // Name with newline
+      ];
+      
+      for (const name of names) {
+        yield name;
+      }
+    }
+    
+    function* hourGenerator() {
+      for (let hour = 0; hour < 24; hour++) {
+        yield hour;
+      }
+    }
+    
+    function* emptyNameGenerator() {
+      yield '';
+      yield ' ';
+      yield '  ';
+      yield '   ';
+      yield '\t';
+      yield '\n';
+      yield ' \t\n ';
+      yield '     ';
+    }
+    
+    // Test Execution
+    const output = document.getElementById('test-output');
+    
+    function log(message, className = '') {
+      const div = document.createElement('div');
+      div.className = 'test-result ' + className;
+      div.innerHTML = message;
+      output.appendChild(div);
+    }
+    
+    // Test 1: Greeting Format with Name
+    log('<h3>Test 1: Greeting Format with Name</h3>');
+    log('Testing that non-empty names produce "[Greeting], [Name]" format...');
+    
+    const greetingFormatResult = forAll(
+      function* () {
+        const names = Array.from(userNameGenerator());
+        const hours = Array.from(hourGenerator());
+        
+        for (const hour of hours) {
+          for (const name of names) {
+            yield { hour, name };
+          }
+        }
+      },
+      (testCase) => {
+        const { hour, name } = testCase;
+        
+        // Skip if name is empty or whitespace-only after trimming
+        if (!name || name.trim().length === 0) {
+          return { pass: true };
+        }
+        
+        const fullGreeting = testGetFullGreeting(hour, name);
+        const expectedGreeting = getGreetingMessage(hour);
+        const expectedFormat = expectedGreeting + ', ' + name;
+        
+        if (fullGreeting !== expectedFormat) {
+          return {
+            pass: false,
+            message: `For hour ${hour} and name "${name}", expected "${expectedFormat}" but got "${fullGreeting}"`
+          };
+        }
+        
+        // Verify the format contains a comma
+        if (!fullGreeting.includes(',')) {
+          return {
+            pass: false,
+            message: `Greeting "${fullGreeting}" should contain a comma for non-empty name "${name}"`
+          };
+        }
+        
+        // Verify the format ends with the name
+        if (!fullGreeting.endsWith(', ' + name)) {
+          return {
+            pass: false,
+            message: `Greeting "${fullGreeting}" should end with ", ${name}"`
+          };
+        }
+        
+        return { pass: true };
+      }
+    );
+    
+    if (greetingFormatResult.pass) {
+      log(`<span class="pass">✓ PASSED</span>: Tested ${greetingFormatResult.tested} combinations`, 'pass');
+      log('For any non-empty, non-whitespace user name and any valid greeting, the displayed greeting is in the format "[Greeting], [Name]"');
+    } else {
+      log(`<span class="fail">✗ FAILED</span>`, 'fail');
+      log(`<pre>${greetingFormatResult.message}</pre>`, 'fail');
+    }
+    
+    // Test 2: Empty and Whitespace-Only Names
+    log('<h3>Test 2: Empty and Whitespace-Only Name Handling</h3>');
+    log('Testing that empty/whitespace names produce greeting without name or comma...');
+    
+    const emptyNameResult = forAll(
+      function* () {
+        const emptyNames = Array.from(emptyNameGenerator());
+        const hours = Array.from(hourGenerator());
+        
+        for (const hour of hours) {
+          for (const name of emptyNames) {
+            yield { hour, name };
+          }
+        }
+      },
+      (testCase) => {
+        const { hour, name } = testCase;
+        const fullGreeting = testGetFullGreeting(hour, name);
+        const expectedGreeting = getGreetingMessage(hour);
+        
+        // For empty or whitespace-only names, greeting should NOT include comma or name
+        if (fullGreeting !== expectedGreeting) {
+          return {
+            pass: false,
+            message: `For hour ${hour} and empty/whitespace name "${name}", expected "${expectedGreeting}" but got "${fullGreeting}"`
+          };
+        }
+        
+        if (fullGreeting.includes(',')) {
+          return {
+            pass: false,
+            message: `Greeting "${fullGreeting}" should not contain comma for empty/whitespace name "${name}"`
+          };
+        }
+        
+        return { pass: true };
+      }
+    );
+    
+    if (emptyNameResult.pass) {
+      log(`<span class="pass">✓ PASSED</span>: Tested ${emptyNameResult.tested} combinations`, 'pass');
+      log('For any empty or whitespace-only name, greeting displays without name or comma');
+    } else {
+      log(`<span class="fail">✗ FAILED</span>`, 'fail');
+      log(`<pre>${emptyNameResult.message}</pre>`, 'fail');
+    }
+    
+    // Summary
+    const allPassed = greetingFormatResult.pass && emptyNameResult.pass;
+    const summaryClass = allPassed ? 'summary' : 'summary fail';
+    const summaryText = allPassed 
+      ? '✓ All Property 3 tests PASSED!' 
+      : '✗ Some Property 3 tests FAILED!';
+    
+    log(`<div class="${summaryClass}">${summaryText}</div>`);
+    
+    // Sample test cases
+    log('<h3>Sample Test Cases</h3>');
+    log('<pre>' + 
+      'testGetFullGreeting(8, "Alice") = "' + testGetFullGreeting(8, "Alice") + '"\n' +
+      'testGetFullGreeting(14, "Bob") = "' + testGetFullGreeting(14, "Bob") + '"\n' +
+      'testGetFullGreeting(19, "Charlie") = "' + testGetFullGreeting(19, "Charlie") + '"\n' +
+      'testGetFullGreeting(23, "Diana") = "' + testGetFullGreeting(23, "Diana") + '"\n' +
+      'testGetFullGreeting(10, "") = "' + testGetFullGreeting(10, "") + '"\n' +
+      'testGetFullGreeting(10, "   ") = "' + testGetFullGreeting(10, "   ") + '"' +
+      '</pre>');
+  </script>
+</body>
+</html>

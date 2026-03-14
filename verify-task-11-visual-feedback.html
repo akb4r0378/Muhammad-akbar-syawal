@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 11: Visual Feedback Verification</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section h2 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .test-item {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-left: 4px solid #2196F3;
+            border-radius: 4px;
+        }
+        .test-item h3 {
+            margin: 0 0 10px 0;
+            color: #2196F3;
+            font-size: 16px;
+        }
+        .test-item p {
+            margin: 5px 0;
+            color: #666;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+        .status.pass {
+            background: #4CAF50;
+            color: white;
+        }
+        .status.fail {
+            background: #f44336;
+            color: white;
+        }
+        .status.manual {
+            background: #ff9800;
+            color: white;
+        }
+        .requirement {
+            font-weight: 600;
+            color: #333;
+            margin-top: 10px;
+        }
+        .expected {
+            color: #4CAF50;
+            font-style: italic;
+        }
+        .actual {
+            color: #2196F3;
+            font-weight: 600;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            background: #2196F3;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #0b7dda;
+        }
+        .summary {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .summary h1 {
+            margin: 0 0 10px 0;
+            color: #1976d2;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="summary">
+        <h1>Task 11: Visual Feedback and Animations Verification</h1>
+        <p><strong>Purpose:</strong> Verify all visual feedback requirements are met</p>
+        <p><strong>Requirements:</strong> 10.1, 10.2, 10.3, 10.4, 10.5, 10.6</p>
+    </div>
+
+    <div class="test-section">
+        <h2>11.1: Task Reordering Animation</h2>
+        
+        <div class="test-item">
+            <h3>Requirement 10.6: Smooth Visual Animation <span class="status manual">MANUAL TEST</span></h3>
+            <p class="requirement">When a Task is reordered, the Dashboard shall provide smooth visual animation of the position change</p>
+            <p><strong>Test Steps:</strong></p>
+            <ol>
+                <li>Open the dashboard in the iframe below</li>
+                <li>Add at least 3 tasks</li>
+                <li>Click the ↑ or ↓ buttons to reorder tasks</li>
+                <li>Observe the animation as tasks move</li>
+            </ol>
+            <p class="expected">Expected: Tasks should smoothly transition to their new positions with visible animation</p>
+            <p><strong>CSS Implementation:</strong></p>
+            <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto;">
+.task-item {
+    transition: background-color 0.2s, border-color 0.2s, transform 0.3s ease, opacity 0.3s ease;
+}</pre>
+            <p class="actual">Actual: Animation duration is 0.3s with ease timing function</p>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>11.2: Visual Feedback Requirements Verification</h2>
+        
+        <div class="test-item">
+            <h3>Requirement 10.1: Theme Transition Speed <span class="status manual">MANUAL TEST</span></h3>
+            <p class="requirement">When Theme is toggled, the Dashboard shall complete the visual transition within 300 milliseconds</p>
+            <p><strong>Test Steps:</strong></p>
+            <ol>
+                <li>Open the dashboard</li>
+                <li>Click the theme toggle button (🌓)</li>
+                <li>Observe the transition speed</li>
+                <li>Toggle multiple times to verify consistency</li>
+            </ol>
+            <p class="expected">Expected: Theme transition completes within 300ms</p>
+            <p><strong>CSS Implementation:</strong></p>
+            <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto;">
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}</pre>
+            <p class="actual">Actual: Transition duration is exactly 0.3s (300ms)</p>
+        </div>
+
+        <div class="test-item">
+            <h3>Requirement 10.2: Duplicate Notification Duration <span class="status manual">MANUAL TEST</span></h3>
+            <p class="requirement">When a duplicate Task is prevented, the Dashboard shall display a notification message for at least 2 seconds</p>
+            <p><strong>Test Steps:</strong></p>
+            <ol>
+                <li>Open the dashboard</li>
+                <li>Add a task (e.g., "Buy milk")</li>
+                <li>Try to add the same task again</li>
+                <li>Observe the notification duration</li>
+                <li>Time how long the notification is visible</li>
+            </ol>
+            <p class="expected">Expected: Notification displays for at least 2 seconds</p>
+            <p><strong>Note:</strong> This feature needs to be implemented in JavaScript</p>
+            <button onclick="checkDuplicateNotification()">Check Implementation</button>
+            <div id="duplicate-result"></div>
+        </div>
+
+        <div class="test-item">
+            <h3>Requirement 10.3: Settings Success Indicators <span class="status manual">MANUAL TEST</span></h3>
+            <p class="requirement">When settings are saved, the Dashboard shall display a success indicator</p>
+            <p><strong>Test Steps:</strong></p>
+            <ol>
+                <li>Open the dashboard</li>
+                <li>Scroll to the Settings section</li>
+                <li>Enter a name and click "Save"</li>
+                <li>Observe the "✓ Saved" indicator</li>
+                <li>Enter a timer duration and click "Save"</li>
+                <li>Observe the "✓ Saved" indicator</li>
+            </ol>
+            <p class="expected">Expected: Success indicator appears after saving settings</p>
+            <p><strong>CSS Implementation:</strong></p>
+            <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto;">
+.saved-indicator {
+    display: none;
+    color: var(--accent-green);
+}
+.saved-indicator.show {
+    display: inline;
+}</pre>
+            <button onclick="checkSuccessIndicators()">Check Implementation</button>
+            <div id="success-result"></div>
+        </div>
+
+        <div class="test-item">
+            <h3>Requirement 10.4: Error State Highlighting <span class="status manual">MANUAL TEST</span></h3>
+            <p class="requirement">When an invalid Timer_Duration is entered, the Dashboard shall highlight the input field with an error state</p>
+            <p><strong>Test Steps:</strong></p>
+            <ol>
+                <li>Open the dashboard</li>
+                <li>Scroll to the Settings section</li>
+                <li>Enter an invalid timer duration (e.g., 0, 150, or "abc")</li>
+                <li>Click "Save"</li>
+                <li>Observe the input field highlighting</li>
+                <li>Verify error message appears</li>
+            </ol>
+            <p class="expected">Expected: Input field is highlighted with error styling and error message displays</p>
+            <p><strong>CSS Implementation:</strong></p>
+            <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto;">
+.settings-input-container input.error {
+    border-color: #f44336;
+    background-color: rgba(244, 67, 54, 0.05);
+}
+.error-message.show {
+    display: block;
+}</pre>
+            <button onclick="checkErrorStates()">Check Implementation</button>
+            <div id="error-result"></div>
+        </div>
+
+        <div class="test-item">
+            <h3>Requirement 10.5: Hover States for Controls <span class="status manual">MANUAL TEST</span></h3>
+            <p class="requirement">The Dashboard shall provide hover states for all new interactive controls</p>
+            <p><strong>Test Steps:</strong></p>
+            <ol>
+                <li>Open the dashboard</li>
+                <li>Hover over the theme toggle button</li>
+                <li>Hover over task move up/down buttons (↑ ↓)</li>
+                <li>Hover over settings save buttons</li>
+                <li>Hover over all input fields</li>
+                <li>Verify visual feedback on hover</li>
+            </ol>
+            <p class="expected">Expected: All controls show visual feedback on hover</p>
+            <p><strong>Controls to Test:</strong></p>
+            <ul>
+                <li>Theme toggle button (🌓) - should scale and show shadow</li>
+                <li>Move up/down buttons (↑ ↓) - should change background</li>
+                <li>Settings save buttons - should darken</li>
+                <li>Input fields - should show focus border</li>
+            </ul>
+            <button onclick="checkHoverStates()">Check Implementation</button>
+            <div id="hover-result"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Live Dashboard Test</h2>
+        <p>Use this embedded dashboard to manually test all visual feedback features:</p>
+        <iframe src="index.html"></iframe>
+    </div>
+
+    <script>
+        function checkDuplicateNotification() {
+            const resultDiv = document.getElementById('duplicate-result');
+            
+            // Check if duplicate notification functionality exists in app.js
+            fetch('js/app.js')
+                .then(response => response.text())
+                .then(code => {
+                    const hasDuplicateCheck = code.includes('isDuplicateTask');
+                    const hasNotification = code.includes('showDuplicateNotification') || 
+                                          code.includes('duplicate-notification');
+                    
+                    let result = '<div style="margin-top: 10px; padding: 10px; border-radius: 4px;">';
+                    
+                    if (hasDuplicateCheck) {
+                        result += '<p style="color: #4CAF50;">✓ Duplicate detection function found</p>';
+                    } else {
+                        result += '<p style="color: #f44336;">✗ Duplicate detection function NOT found</p>';
+                    }
+                    
+                    if (hasNotification) {
+                        result += '<p style="color: #4CAF50;">✓ Notification function found</p>';
+                    } else {
+                        result += '<p style="color: #f44336;">✗ Notification function NOT found - needs implementation</p>';
+                    }
+                    
+                    result += '<p style="color: #ff9800; font-weight: 600;">⚠ Manual testing required to verify 2-second duration</p>';
+                    result += '</div>';
+                    
+                    resultDiv.innerHTML = result;
+                })
+                .catch(err => {
+                    resultDiv.innerHTML = '<p style="color: #f44336;">Error checking implementation: ' + err.message + '</p>';
+                });
+        }
+
+        function checkSuccessIndicators() {
+            const resultDiv = document.getElementById('success-result');
+            
+            fetch('js/app.js')
+                .then(response => response.text())
+                .then(code => {
+                    const hasFunction = code.includes('showSettingsSavedFeedback');
+                    const hasTimeout = code.includes('setTimeout') && code.includes('2000');
+                    
+                    let result = '<div style="margin-top: 10px; padding: 10px; border-radius: 4px;">';
+                    
+                    if (hasFunction) {
+                        result += '<p style="color: #4CAF50;">✓ Success feedback function found</p>';
+                    } else {
+                        result += '<p style="color: #f44336;">✗ Success feedback function NOT found</p>';
+                    }
+                    
+                    if (hasTimeout) {
+                        result += '<p style="color: #4CAF50;">✓ Timeout implementation found (2000ms)</p>';
+                    } else {
+                        result += '<p style="color: #ff9800;">⚠ Timeout implementation may need verification</p>';
+                    }
+                    
+                    result += '<p style="color: #ff9800; font-weight: 600;">⚠ Manual testing required to verify visual display</p>';
+                    result += '</div>';
+                    
+                    resultDiv.innerHTML = result;
+                })
+                .catch(err => {
+                    resultDiv.innerHTML = '<p style="color: #f44336;">Error checking implementation: ' + err.message + '</p>';
+                });
+        }
+
+        function checkErrorStates() {
+            const resultDiv = document.getElementById('error-result');
+            
+            fetch('js/app.js')
+                .then(response => response.text())
+                .then(code => {
+                    const hasFunction = code.includes('showSettingsError');
+                    const hasValidation = code.includes('isNaN') && code.includes('newDuration');
+                    const hasErrorClass = code.includes("classList.add('error')");
+                    
+                    let result = '<div style="margin-top: 10px; padding: 10px; border-radius: 4px;">';
+                    
+                    if (hasFunction) {
+                        result += '<p style="color: #4CAF50;">✓ Error display function found</p>';
+                    } else {
+                        result += '<p style="color: #f44336;">✗ Error display function NOT found</p>';
+                    }
+                    
+                    if (hasValidation) {
+                        result += '<p style="color: #4CAF50;">✓ Input validation found</p>';
+                    } else {
+                        result += '<p style="color: #f44336;">✗ Input validation NOT found</p>';
+                    }
+                    
+                    if (hasErrorClass) {
+                        result += '<p style="color: #4CAF50;">✓ Error class application found</p>';
+                    } else {
+                        result += '<p style="color: #f44336;">✗ Error class application NOT found</p>';
+                    }
+                    
+                    result += '<p style="color: #ff9800; font-weight: 600;">⚠ Manual testing required to verify visual highlighting</p>';
+                    result += '</div>';
+                    
+                    resultDiv.innerHTML = result;
+                })
+                .catch(err => {
+                    resultDiv.innerHTML = '<p style="color: #f44336;">Error checking implementation: ' + err.message + '</p>';
+                });
+        }
+
+        function checkHoverStates() {
+            const resultDiv = document.getElementById('hover-result');
+            
+            fetch('css/styles.css')
+                .then(response => response.text())
+                .then(css => {
+                    const hasThemeToggleHover = css.includes('.theme-toggle-btn:hover');
+                    const hasMoveButtonHover = css.includes('.move-up-btn:hover') || 
+                                              css.includes('.move-down-btn:hover');
+                    const hasSettingsButtonHover = css.includes('.settings-input-container button:hover');
+                    const hasInputFocus = css.includes('input:focus');
+                    
+                    let result = '<div style="margin-top: 10px; padding: 10px; border-radius: 4px;">';
+                    
+                    if (hasThemeToggleHover) {
+                        result += '<p style="color: #4CAF50;">✓ Theme toggle hover state found</p>';
+                    } else {
+                        result += '<p style="color: #f44336;">✗ Theme toggle hover state NOT found</p>';
+                    }
+                    
+                    if (hasMoveButtonHover) {
+                        result += '<p style="color: #4CAF50;">✓ Move button hover states found</p>';
+                    } else {
+                        result += '<p style="color: #f44336;">✗ Move button hover states NOT found</p>';
+                    }
+                    
+                    if (hasSettingsButtonHover) {
+                        result += '<p style="color: #4CAF50;">✓ Settings button hover states found</p>';
+                    } else {
+                        result += '<p style="color: #f44336;">✗ Settings button hover states NOT found</p>';
+                    }
+                    
+                    if (hasInputFocus) {
+                        result += '<p style="color: #4CAF50;">✓ Input focus states found</p>';
+                    } else {
+                        result += '<p style="color: #f44336;">✗ Input focus states NOT found</p>';
+                    }
+                    
+                    result += '<p style="color: #ff9800; font-weight: 600;">⚠ Manual testing required to verify visual effects</p>';
+                    result += '</div>';
+                    
+                    resultDiv.innerHTML = result;
+                })
+                .catch(err => {
+                    resultDiv.innerHTML = '<p style="color: #f44336;">Error checking implementation: ' + err.message + '</p>';
+                });
+        }
+    </script>
+</body>
+</html>

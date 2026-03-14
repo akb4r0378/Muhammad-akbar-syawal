@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Task 4 Implementation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        h2 {
+            color: #555;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .test-controls {
+            margin: 15px 0;
+        }
+        input {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 200px;
+        }
+        button {
+            padding: 8px 15px;
+            margin: 5px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        #greeting-display {
+            font-size: 28px;
+            font-weight: bold;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-left: 4px solid #2196F3;
+            margin: 15px 0;
+        }
+        .success {
+            background: #e8f5e9;
+            padding: 15px;
+            border-left: 4px solid #4CAF50;
+            margin: 15px 0;
+        }
+        .code {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Task 4 Implementation Verification</h1>
+    
+    <div class="section">
+        <h2>Implementation Summary</h2>
+        <div class="success">
+            <strong>✓ Task 4.1 Complete:</strong> Added user name state and storage functions
+            <ul>
+                <li>Added <code>userName</code> state variable (default empty string)</li>
+                <li>Implemented <code>loadUserName()</code> to retrieve from localStorage</li>
+                <li>Implemented <code>saveUserName(name)</code> to persist to localStorage</li>
+                <li>Handles localStorage errors gracefully with try-catch</li>
+            </ul>
+        </div>
+        <div class="success">
+            <strong>✓ Task 4.2 Complete:</strong> Enhanced greeting display to include user name
+            <ul>
+                <li>Modified <code>updateGreeting()</code> to append user name if configured</li>
+                <li>Format: "[Greeting], [Name]" when name exists and is not whitespace-only</li>
+                <li>Displays greeting without name when userName is empty or whitespace-only</li>
+                <li>Calls <code>loadUserName()</code> during initialization</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Live Greeting Display</h2>
+        <div id="greeting-display">Loading...</div>
+        
+        <div class="test-controls">
+            <label>
+                <strong>Set User Name:</strong>
+                <input type="text" id="name-input" placeholder="Enter your name">
+            </label>
+            <button onclick="setUserName()">Apply Name</button>
+            <button onclick="clearUserName()">Clear Name</button>
+            <button onclick="testWhitespace()">Test Whitespace</button>
+        </div>
+        
+        <div class="info">
+            <strong>Current localStorage value:</strong>
+            <div id="storage-value" class="code">null</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Test Scenarios</h2>
+        
+        <h3>Scenario 1: No User Name</h3>
+        <div class="info">
+            Expected: Display greeting without comma or name<br>
+            Example: "Good Morning" (not "Good Morning, ")
+        </div>
+        
+        <h3>Scenario 2: Valid User Name</h3>
+        <div class="info">
+            Expected: Display greeting with comma and name<br>
+            Example: "Good Morning, Alice"
+        </div>
+        
+        <h3>Scenario 3: Whitespace-Only Name</h3>
+        <div class="info">
+            Expected: Treat as empty, display greeting without comma<br>
+            Example: "Good Morning" (not "Good Morning,    ")
+        </div>
+        
+        <h3>Scenario 4: Persistence</h3>
+        <div class="info">
+            Expected: Name persists across page reloads<br>
+            Test: Set a name, reload the page, verify name is still displayed
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Code Implementation</h2>
+        
+        <h3>User Name State and Storage Functions</h3>
+        <div class="code">
+// User name state
+let userName = '';
+
+function loadUserName() {
+  try {
+    const storedName = localStorage.getItem('userName');
+    userName = storedName || '';
+  } catch (e) {
+    console.error('Failed to load user name from localStorage:', e);
+    userName = '';
+  }
+}
+
+function saveUserName(name) {
+  try {
+    localStorage.setItem('userName', name);
+    userName = name;
+  } catch (e) {
+    console.error('Failed to save user name to localStorage:', e);
+  }
+}
+        </div>
+        
+        <h3>Enhanced updateGreeting() Function</h3>
+        <div class="code">
+function updateGreeting() {
+  const now = new Date();
+  
+  // ... time and date formatting code ...
+  
+  // Get greeting message
+  const greeting = getGreetingMessage(now.getHours());
+  
+  // Append user name if configured
+  let fullGreeting = greeting;
+  if (userName && userName.trim().length > 0) {
+    fullGreeting = greeting + ', ' + userName;
+  }
+  
+  // Update DOM
+  document.getElementById('greeting-message').textContent = fullGreeting;
+}
+        </div>
+    </div>
+
+    <script>
+        // Import functions from app.js
+        let userName = '';
+
+        function loadUserName() {
+            try {
+                const storedName = localStorage.getItem('userName');
+                userName = storedName || '';
+            } catch (e) {
+                console.error('Failed to load user name from localStorage:', e);
+                userName = '';
+            }
+        }
+
+        function saveUserName(name) {
+            try {
+                localStorage.setItem('userName', name);
+                userName = name;
+            } catch (e) {
+                console.error('Failed to save user name to localStorage:', e);
+            }
+        }
+
+        function getGreetingMessage(hour) {
+            if (hour >= 5 && hour < 12) {
+                return 'Good Morning';
+            } else if (hour >= 12 && hour < 17) {
+                return 'Good Afternoon';
+            } else if (hour >= 17 && hour < 21) {
+                return 'Good Evening';
+            } else {
+                return 'Good Night';
+            }
+        }
+
+        function updateGreeting() {
+            const now = new Date();
+            const greeting = getGreetingMessage(now.getHours());
+            
+            let fullGreeting = greeting;
+            if (userName && userName.trim().length > 0) {
+                fullGreeting = greeting + ', ' + userName;
+            }
+            
+            document.getElementById('greeting-display').textContent = fullGreeting;
+            updateStorageDisplay();
+        }
+
+        function updateStorageDisplay() {
+            const stored = localStorage.getItem('userName');
+            document.getElementById('storage-value').textContent = 
+                stored === null ? 'null' : `"${stored}"`;
+        }
+
+        function setUserName() {
+            const name = document.getElementById('name-input').value;
+            saveUserName(name);
+            updateGreeting();
+        }
+
+        function clearUserName() {
+            saveUserName('');
+            document.getElementById('name-input').value = '';
+            updateGreeting();
+        }
+
+        function testWhitespace() {
+            saveUserName('   ');
+            document.getElementById('name-input').value = '   ';
+            updateGreeting();
+        }
+
+        // Initialize
+        loadUserName();
+        updateGreeting();
+        setInterval(updateGreeting, 1000);
+    </script>
+</body>
+</html>

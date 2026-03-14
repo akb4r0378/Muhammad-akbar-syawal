@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 11 Verification - Visual Feedback and Animations</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2196F3;
+            margin-top: 0;
+        }
+        .test-item {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-left: 4px solid #2196F3;
+            border-radius: 4px;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .pass { background: #4CAF50; color: white; }
+        .fail { background: #f44336; color: white; }
+        .pending { background: #ff9800; color: white; }
+        button {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0b7dda;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .iframe-container {
+            margin-top: 15px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+        }
+        .instructions {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+            border-left: 4px solid #2196F3;
+        }
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        .checklist li {
+            padding: 8px;
+            margin: 5px 0;
+            background: #f5f5f5;
+            border-radius: 4px;
+        }
+        .checklist input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body>
+    <h1>Task 11 Verification: Visual Feedback and Animations</h1>
+    
+    <div class="test-section">
+        <h2>Overview</h2>
+        <p>This verification tests all visual feedback and animation requirements from Task 11:</p>
+        <ul>
+            <li><strong>11.1:</strong> Smooth animation for task reordering</li>
+            <li><strong>11.2:</strong> All visual feedback requirements (theme transition, notifications, success indicators, error states, hover states)</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>Requirement 10.1: Theme Transition Speed</h2>
+        <div class="instructions">
+            <strong>Test:</strong> Verify theme transition completes within 300ms
+            <ol>
+                <li>Open the dashboard below</li>
+                <li>Click the theme toggle button (🌓) in the top-right corner</li>
+                <li>Observe the transition speed</li>
+                <li>The transition should feel smooth and complete within 300ms</li>
+            </ol>
+        </div>
+        <div class="test-item">
+            <strong>Expected:</strong> Theme transition completes within 300 milliseconds
+            <br><strong>CSS Rule:</strong> <code>transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;</code>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Requirement 10.2: Duplicate Notification Duration</h2>
+        <div class="instructions">
+            <strong>Test:</strong> Verify duplicate notification displays for at least 2 seconds
+            <ol>
+                <li>Add a task (e.g., "Test Task")</li>
+                <li>Try to add the same task again</li>
+                <li>A notification should appear saying "This task already exists!"</li>
+                <li>Time how long the notification stays visible (should be at least 2 seconds)</li>
+            </ol>
+        </div>
+        <div class="test-item">
+            <strong>Expected:</strong> Duplicate notification displays for at least 2 seconds
+            <br><strong>Note:</strong> This feature is not yet implemented (Task 8)
+            <span class="status pending">PENDING</span>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Requirement 10.3: Settings Success Indicators</h2>
+        <div class="instructions">
+            <strong>Test:</strong> Verify settings success indicators display correctly
+            <ol>
+                <li>Scroll to the Settings section</li>
+                <li>Enter a name and click "Save"</li>
+                <li>A green checkmark "✓ Saved" should appear briefly</li>
+                <li>Change the timer duration and click "Save"</li>
+                <li>A green checkmark "✓ Saved" should appear briefly</li>
+            </ol>
+        </div>
+        <div class="test-item">
+            <strong>Expected:</strong> Success indicators display for 2 seconds after saving
+            <br><strong>Implementation:</strong> <code>showSettingsSavedFeedback()</code> function with 2-second timeout
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Requirement 10.4: Error State Highlighting</h2>
+        <div class="instructions">
+            <strong>Test:</strong> Verify invalid timer duration highlights input field
+            <ol>
+                <li>Scroll to the Settings section</li>
+                <li>Enter an invalid timer duration (e.g., 0 or 150)</li>
+                <li>Click "Save"</li>
+                <li>The input field should be highlighted with an error state (red border)</li>
+                <li>An error message should appear below the input</li>
+            </ol>
+        </div>
+        <div class="test-item">
+            <strong>Expected:</strong> Input field highlighted with error class, error message displayed
+            <br><strong>CSS Rule:</strong> <code>.settings-input-container input.error { border-color: #f44336; background-color: rgba(244, 67, 54, 0.05); }</code>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Requirement 10.5: Hover States</h2>
+        <div class="instructions">
+            <strong>Test:</strong> Verify hover states work for all new controls
+            <ol>
+                <li>Hover over the theme toggle button - should scale up</li>
+                <li>Hover over settings save buttons - should change color</li>
+                <li>Hover over task move up/down buttons - should change background</li>
+                <li>Hover over all interactive elements - should show visual feedback</li>
+            </ol>
+        </div>
+        <div class="test-item">
+            <strong>Expected:</strong> All interactive controls have hover states defined in CSS
+            <br><strong>Elements:</strong> Theme toggle, settings buttons, move up/down buttons, all inputs
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Requirement 10.6: Task Reordering Animation</h2>
+        <div class="instructions">
+            <strong>Test:</strong> Verify smooth visual animation for task reordering
+            <ol>
+                <li>Add at least 3 tasks</li>
+                <li>Click the "↑" or "↓" button on a task</li>
+                <li>The task should smoothly transition to its new position</li>
+                <li>The animation should complete within a reasonable time (300ms)</li>
+            </ol>
+        </div>
+        <div class="test-item">
+            <strong>Expected:</strong> Task position changes with smooth animation
+            <br><strong>CSS Rule:</strong> <code>transition: background-color 0.2s, border-color 0.2s, transform 0.3s ease, opacity 0.3s ease;</code>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Manual Verification Checklist</h2>
+        <div class="instructions">
+            <p>Check off each item as you verify it in the dashboard below:</p>
+        </div>
+        <ul class="checklist">
+            <li><input type="checkbox" id="check1"> <label for="check1">Theme transition is smooth (within 300ms)</label></li>
+            <li><input type="checkbox" id="check2"> <label for="check2">Duplicate notification displays for at least 2 seconds (PENDING - Task 8)</label></li>
+            <li><input type="checkbox" id="check3"> <label for="check3">Name settings success indicator displays correctly</label></li>
+            <li><input type="checkbox" id="check4"> <label for="check4">Timer settings success indicator displays correctly</label></li>
+            <li><input type="checkbox" id="check5"> <label for="check5">Invalid timer duration highlights input field with error state</label></li>
+            <li><input type="checkbox" id="check6"> <label for="check6">Error message displays for invalid timer duration</label></li>
+            <li><input type="checkbox" id="check7"> <label for="check7">Theme toggle button has hover state</label></li>
+            <li><input type="checkbox" id="check8"> <label for="check8">Settings save buttons have hover states</label></li>
+            <li><input type="checkbox" id="check9"> <label for="check9">Task move up/down buttons have hover states</label></li>
+            <li><input type="checkbox" id="check10"> <label for="check10">Task reordering has smooth animation</label></li>
+            <li><input type="checkbox" id="check11"> <label for="check11">All input fields have focus states</label></li>
+        </ul>
+        <button onclick="checkCompletion()">Check Completion Status</button>
+        <div id="completion-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Live Dashboard Test</h2>
+        <div class="instructions">
+            <p>Use the dashboard below to manually verify all visual feedback and animation requirements:</p>
+        </div>
+        <div class="iframe-container">
+            <iframe src="index.html"></iframe>
+        </div>
+    </div>
+
+    <script>
+        function checkCompletion() {
+            const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]');
+            const total = checkboxes.length;
+            const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
+            const resultDiv = document.getElementById('completion-result');
+            
+            // Exclude pending item (check2) from required count
+            const requiredChecks = total - 1; // One item is pending
+            const requiredChecked = checked - (document.getElementById('check2').checked ? 1 : 0);
+            
+            if (requiredChecked === requiredChecks) {
+                resultDiv.innerHTML = '<div class="result pass">✓ All visual feedback requirements verified! Task 11 is complete.</div>';
+            } else {
+                resultDiv.innerHTML = `<div class="result pending">⚠ ${requiredChecked}/${requiredChecks} items verified. Please complete all checks.</div>`;
+            }
+        }
+    </script>
+</body>
+</html>

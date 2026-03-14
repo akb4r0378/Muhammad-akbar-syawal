@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 11 Manual Testing Guide</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #667eea;
+            margin-top: 0;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+        }
+        h2 {
+            color: #764ba2;
+            margin-top: 30px;
+            border-left: 4px solid #764ba2;
+            padding-left: 15px;
+        }
+        .test-step {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .test-step h3 {
+            margin-top: 0;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .badge.req {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        .badge.time {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+        ol {
+            line-height: 1.8;
+        }
+        .expected {
+            background: #e8f5e9;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border-left: 3px solid #4caf50;
+        }
+        .expected strong {
+            color: #2e7d32;
+        }
+        .note {
+            background: #fff3e0;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border-left: 3px solid #ff9800;
+        }
+        .note strong {
+            color: #e65100;
+        }
+        .launch-btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .launch-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        .checklist {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .checklist label {
+            display: block;
+            padding: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .checklist label:hover {
+            background: #f5f5f5;
+        }
+        .checklist input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Task 11: Visual Feedback & Animations - Manual Testing Guide</h1>
+        
+        <p><strong>Purpose:</strong> This guide will help you manually test all visual feedback and animation features implemented in Task 11.</p>
+        
+        <a href="index.html" target="_blank" class="launch-btn">🚀 Launch Dashboard in New Tab</a>
+        
+        <h2>Test 1: Task Reordering Animation</h2>
+        <div class="test-step">
+            <h3>
+                <span class="badge req">Req 10.6</span>
+                <span class="badge time">300ms</span>
+                Smooth Visual Animation
+            </h3>
+            <ol>
+                <li>Open the dashboard (click button above)</li>
+                <li>Add at least 3 tasks (e.g., "Task 1", "Task 2", "Task 3")</li>
+                <li>Click the <strong>↑</strong> button on the second task</li>
+                <li>Observe the smooth animation as tasks swap positions</li>
+                <li>Click the <strong>↓</strong> button on the first task</li>
+                <li>Verify the animation is smooth and visible</li>
+            </ol>
+            <div class="expected">
+                <strong>✓ Expected:</strong> Tasks should smoothly transition to their new positions with a visible 300ms animation. The movement should feel natural and not jarring.
+            </div>
+            <div class="note">
+                <strong>💡 Note:</strong> The animation uses CSS transitions with <code>transform 0.3s ease</code> for smooth movement.
+            </div>
+        </div>
+
+        <h2>Test 2: Theme Transition Speed</h2>
+        <div class="test-step">
+            <h3>
+                <span class="badge req">Req 10.1</span>
+                <span class="badge time">≤300ms</span>
+                Theme Toggle Transition
+            </h3>
+            <ol>
+                <li>Locate the theme toggle button (🌓) in the top-right corner</li>
+                <li>Click the button to switch from light to dark mode</li>
+                <li>Observe the transition speed - it should feel instant but smooth</li>
+                <li>Click again to switch back to light mode</li>
+                <li>Toggle multiple times to verify consistency</li>
+            </ol>
+            <div class="expected">
+                <strong>✓ Expected:</strong> The theme transition should complete within 300 milliseconds. Colors should smoothly fade from one theme to another without any jarring changes.
+            </div>
+            <div class="note">
+                <strong>💡 Note:</strong> All elements have <code>transition: background-color 0.3s ease, color 0.3s ease</code> applied.
+            </div>
+        </div>
+
+        <h2>Test 3: Duplicate Task Notification</h2>
+        <div class="test-step">
+            <h3>
+                <span class="badge req">Req 10.2</span>
+                <span class="badge time">≥2 seconds</span>
+                Duplicate Prevention Notification
+            </h3>
+            <ol>
+                <li>Add a task with text "Buy milk"</li>
+                <li>Try to add the same task again: "Buy milk"</li>
+                <li>A red notification should appear at the top: "This task already exists!"</li>
+                <li>Count how long the notification is visible (should be at least 2 seconds)</li>
+                <li>Try with different case: "BUY MILK" - should also show notification</li>
+                <li>Try editing a task to duplicate text - should also show notification</li>
+            </ol>
+            <div class="expected">
+                <strong>✓ Expected:</strong> A red notification banner appears at the top center of the screen, displays for exactly 2 seconds, then smoothly disappears. The notification should slide down with animation.
+            </div>
+            <div class="note">
+                <strong>💡 Note:</strong> Duplicate detection is case-insensitive and trims whitespace. The notification uses a slideDown animation for smooth appearance.
+            </div>
+        </div>
+
+        <h2>Test 4: Settings Success Indicators</h2>
+        <div class="test-step">
+            <h3>
+                <span class="badge req">Req 10.3</span>
+                <span class="badge time">2 seconds</span>
+                Save Success Feedback
+            </h3>
+            <ol>
+                <li>Scroll down to the Settings section</li>
+                <li>Enter your name in the "Your Name" field (e.g., "Alice")</li>
+                <li>Click the "Save" button</li>
+                <li>Look for the green "✓ Saved" indicator next to the button</li>
+                <li>Verify it displays for about 2 seconds then disappears</li>
+                <li>Enter a timer duration (e.g., "30")</li>
+                <li>Click "Save" and verify the success indicator appears</li>
+            </ol>
+            <div class="expected">
+                <strong>✓ Expected:</strong> A green "✓ Saved" indicator appears next to the Save button immediately after clicking. It remains visible for 2 seconds then smoothly disappears.
+            </div>
+            <div class="note">
+                <strong>💡 Note:</strong> The greeting should update immediately with your name. The timer should reset to the new duration.
+            </div>
+        </div>
+
+        <h2>Test 5: Error State Highlighting</h2>
+        <div class="test-step">
+            <h3>
+                <span class="badge req">Req 10.4</span>
+                <span class="badge time">3 seconds</span>
+                Invalid Input Highlighting
+            </h3>
+            <ol>
+                <li>In the Settings section, find the "Timer Duration" field</li>
+                <li>Enter an invalid value: <strong>0</strong> (below minimum)</li>
+                <li>Click "Save"</li>
+                <li>Observe the input field - it should have a red border and light red background</li>
+                <li>An error message should appear below: "Duration must be between 1 and 120 minutes"</li>
+                <li>Try other invalid values: <strong>150</strong> (above maximum), <strong>abc</strong> (not a number)</li>
+                <li>Verify error state persists for about 3 seconds</li>
+            </ol>
+            <div class="expected">
+                <strong>✓ Expected:</strong> The input field is highlighted with a red border (#f44336) and light red background. An error message appears below the field. Both disappear after 3 seconds.
+            </div>
+            <div class="note">
+                <strong>💡 Note:</strong> Valid range is 1-120 minutes. The error class is applied to the input element and removed after 3 seconds.
+            </div>
+        </div>
+
+        <h2>Test 6: Hover States for All Controls</h2>
+        <div class="test-step">
+            <h3>
+                <span class="badge req">Req 10.5</span>
+                Interactive Control Feedback
+            </h3>
+            <ol>
+                <li><strong>Theme Toggle:</strong> Hover over the 🌓 button - should scale up and show enhanced shadow</li>
+                <li><strong>Move Buttons:</strong> Hover over ↑ and ↓ buttons on tasks - background should change</li>
+                <li><strong>Settings Buttons:</strong> Hover over Save buttons - should darken to a deeper green</li>
+                <li><strong>Input Fields:</strong> Click into any input field - border should change color (green for tasks/name, blue for links)</li>
+                <li><strong>Task Buttons:</strong> Hover over Complete, Edit, Delete buttons - background should change</li>
+                <li><strong>Timer Buttons:</strong> Hover over Start, Stop, Reset - colors should darken</li>
+            </ol>
+            <div class="expected">
+                <strong>✓ Expected:</strong> All interactive controls provide visual feedback on hover. Buttons should change color or scale, input fields should show focus borders.
+            </div>
+            <div class="note">
+                <strong>💡 Note:</strong> Hover states use CSS transitions for smooth color changes. Active states (when clicking) also provide scale feedback.
+            </div>
+        </div>
+
+        <h2>✅ Testing Checklist</h2>
+        <div class="checklist">
+            <label>
+                <input type="checkbox" id="test1">
+                Test 1: Task reordering animation is smooth (300ms)
+            </label>
+            <label>
+                <input type="checkbox" id="test2">
+                Test 2: Theme transition completes within 300ms
+            </label>
+            <label>
+                <input type="checkbox" id="test3">
+                Test 3: Duplicate notification displays for 2+ seconds
+            </label>
+            <label>
+                <input type="checkbox" id="test4">
+                Test 4: Settings success indicators appear correctly
+            </label>
+            <label>
+                <input type="checkbox" id="test5">
+                Test 5: Error states highlight input fields properly
+            </label>
+            <label>
+                <input type="checkbox" id="test6">
+                Test 6: All hover states work on interactive controls
+            </label>
+        </div>
+
+        <div style="background: #e8f5e9; padding: 20px; border-radius: 8px; margin-top: 30px;">
+            <h3 style="color: #2e7d32; margin-top: 0;">🎉 Task 11 Complete!</h3>
+            <p>All visual feedback and animation features have been implemented:</p>
+            <ul>
+                <li>✅ Smooth 300ms animations for task reordering</li>
+                <li>✅ Theme transitions within 300ms</li>
+                <li>✅ Duplicate notifications for 2+ seconds</li>
+                <li>✅ Settings success indicators</li>
+                <li>✅ Error state highlighting</li>
+                <li>✅ Comprehensive hover states</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Save checkbox state to localStorage
+        document.querySelectorAll('.checklist input[type="checkbox"]').forEach(checkbox => {
+            const savedState = localStorage.getItem(checkbox.id);
+            if (savedState === 'true') {
+                checkbox.checked = true;
+            }
+            
+            checkbox.addEventListener('change', () => {
+                localStorage.setItem(checkbox.id, checkbox.checked);
+            });
+        });
+    </script>
+</body>
+</html>

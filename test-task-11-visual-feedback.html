@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 11 - Automated Visual Feedback Tests</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2196F3;
+            margin-top: 0;
+        }
+        .test-result {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 4px solid;
+        }
+        .pass {
+            background: #e8f5e9;
+            border-color: #4CAF50;
+            color: #2e7d32;
+        }
+        .fail {
+            background: #ffebee;
+            border-color: #f44336;
+            color: #c62828;
+        }
+        .info {
+            background: #e3f2fd;
+            border-color: #2196F3;
+            color: #1565c0;
+        }
+        button {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0b7dda;
+        }
+        .test-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .status-pass { background: #4CAF50; color: white; }
+        .status-fail { background: #f44336; color: white; }
+        .status-pending { background: #ff9800; color: white; }
+        pre {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .summary {
+            background: #fff3e0;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #ff9800;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Task 11: Visual Feedback and Animations - Automated Tests</h1>
+    
+    <div class="test-container">
+        <h2>Test Overview</h2>
+        <p>This page performs automated checks for all visual feedback and animation requirements.</p>
+        <button onclick="runAllTests()">Run All Tests</button>
+        <div id="test-results"></div>
+    </div>
+
+    <div class="test-container">
+        <h2>Test Results</h2>
+        <div id="detailed-results"></div>
+    </div>
+
+    <script>
+        const result

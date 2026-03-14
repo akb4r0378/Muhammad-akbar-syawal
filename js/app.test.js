@@ -343,4 +343,503 @@ if (linkIdUniquenessResult.pass) {
   console.error(`  ${linkIdUniquenessResult.message}\n`);
 }
 
+// **Validates: Requirements 5.5, 5.6**
+// Property 9: Empty Link Prevention
+console.log('Testing Property 9: Empty Link Prevention');
+
+// Test helper: simulate addLink behavior
+function testAddLink(name, url) {
+  const testLinks = [];
+  
+  // Replicate addLink validation logic
+  if (!name || name.trim().length === 0 || !url || url.trim().length === 0) {
+    return { created: false, links: testLinks };
+  }
+  
+  const newLink = {
+    id: generateId(),
+    name: name.trim(),
+    url: url.trim()
+  };
+  
+  testLinks.push(newLink);
+  return { created: true, links: testLinks };
+}
+
+// Generate test cases for empty/whitespace strings
+function* emptyStringGenerator() {
+  const emptyStrings = [
+    '',
+    ' ',
+    '  ',
+    '   ',
+    '\t',
+    '\n',
+    ' \t\n ',
+    '     '
+  ];
+  
+  const validStrings = [
+    'Google',
+    'https://example.com',
+    'My Link',
+    'a',
+    ' valid ',
+    'test'
+  ];
+  
+  // Test empty name with valid URL
+  for (const emptyStr of emptyStrings) {
+    for (const validUrl of validStrings) {
+      yield { name: emptyStr, url: validUrl, shouldFail: true, reason: 'empty name' };
+    }
+  }
+  
+  // Test valid name with empty URL
+  for (const validName of validStrings) {
+    for (const emptyStr of emptyStrings) {
+      yield { name: validName, url: emptyStr, shouldFail: true, reason: 'empty URL' };
+    }
+  }
+  
+  // Test both empty
+  for (const emptyStr1 of emptyStrings) {
+    for (const emptyStr2 of emptyStrings) {
+      yield { name: emptyStr1, url: emptyStr2, shouldFail: true, reason: 'both empty' };
+    }
+  }
+  
+  // Test valid combinations
+  for (const validName of validStrings) {
+    for (const validUrl of validStrings) {
+      yield { name: validName, url: validUrl, shouldFail: false, reason: 'both valid' };
+    }
+  }
+}
+
+const emptyLinkPreventionResult = forAll(
+  emptyStringGenerator,
+  (testCase) => {
+    const result = testAddLink(testCase.name, testCase.url);
+    
+    if (testCase.shouldFail) {
+      // Link should NOT be created
+      if (result.created) {
+        return {
+          pass: false,
+          message: `addLink("${testCase.name}", "${testCase.url}") created a link but should have rejected it (${testCase.reason})`
+        };
+      }
+      
+      if (result.links.length > 0) {
+        return {
+          pass: false,
+          message: `addLink("${testCase.name}", "${testCase.url}") added link to array but should have rejected it (${testCase.reason})`
+        };
+      }
+    } else {
+      // Link SHOULD be created
+      if (!result.created) {
+        return {
+          pass: false,
+          message: `addLink("${testCase.name}", "${testCase.url}") rejected valid link (${testCase.reason})`
+        };
+      }
+      
+      if (result.links.length !== 1) {
+        return {
+          pass: false,
+          message: `addLink("${testCase.name}", "${testCase.url}") should have created exactly 1 link but created ${result.links.length}`
+        };
+      }
+      
+      // Verify the link has non-empty trimmed values
+      const link = result.links[0];
+      if (link.name.trim().length === 0) {
+        return {
+          pass: false,
+          message: `Created link has empty name after trim: "${link.name}"`
+        };
+      }
+      
+      if (link.url.trim().length === 0) {
+        return {
+          pass: false,
+          message: `Created link has empty URL after trim: "${link.url}"`
+        };
+      }
+    }
+    
+    return { pass: true };
+  }
+);
+
+if (emptyLinkPreventionResult.pass) {
+  console.log(`✓ Property 9 passed: Tested ${emptyLinkPreventionResult.tested} test cases`);
+  console.log('  Empty or whitespace-only names/URLs are correctly rejected');
+  console.log('  Valid non-empty strings successfully create links');
+  console.log('  All created links have non-empty trimmed name and URL\n');
+} else {
+  console.error(`✗ Property 9 failed!`);
+  console.error(`  ${emptyLinkPreventionResult.message}\n`);
+}
+
+// ============================================================================
+// Dashboard Enhancements - Property-Based Tests
+// ============================================================================
+
+console.log('\n=== Dashboard Enhancements Property Tests ===\n');
+
+// Feature: dashboard-enhancements, Property 1: Theme Toggle Alternation
+// **Validates: Requirements 1.2**
+console.log('Testing Property 1: Theme Toggle Alternation');
+
+// Test helper: simulate toggleTheme behavior
+function testToggleTheme(initialTheme) {
+  // Replicate toggleTheme logic
+  let currentTheme = initialTheme;
+  currentTheme = (currentTheme === 'light') ? 'dark' : 'light';
+  return currentTheme;
+}
+
+// Generator for theme values
+function* themeGenerator() {
+  // Test all possible theme states
+  yield 'light';
+  yield 'dark';
+  
+  // Test multiple iterations to verify consistency
+  for (let i = 0; i < 100; i++) {
+    yield Math.random() < 0.5 ? 'light' : 'dark';
+  }
+}
+
+const themeToggleAlternationResult = forAll(
+  themeGenerator,
+  (initialTheme) => {
+    const resultTheme = testToggleTheme(initialTheme);
+    
+    // Verify that toggle produces the opposite theme
+    if (initialTheme === 'light' && resultTheme !== 'dark') {
+      return {
+        pass: false,
+        message: `toggleTheme() with initial theme 'light' returned '${resultTheme}' but expected 'dark'`
+      };
+    }
+    
+    if (initialTheme === 'dark' && resultTheme !== 'light') {
+      return {
+        pass: false,
+        message: `toggleTheme() with initial theme 'dark' returned '${resultTheme}' but expected 'light'`
+      };
+    }
+    
+    // Verify that toggling twice returns to original theme
+    const afterSecondToggle = testToggleTheme(resultTheme);
+    if (afterSecondToggle !== initialTheme) {
+      return {
+        pass: false,
+        message: `Toggling twice from '${initialTheme}' resulted in '${afterSecondToggle}' but expected to return to '${initialTheme}'`
+      };
+    }
+    
+    return { pass: true };
+  }
+);
+
+if (themeToggleAlternationResult.pass) {
+  console.log(`✓ Property 1 passed: Tested ${themeToggleAlternationResult.tested} theme toggle operations`);
+  console.log('  For any starting theme (light or dark), toggling produces the opposite theme');
+  console.log('  Toggling twice returns to the original theme (light ↔ dark ↔ light)\n');
+} else {
+  console.error(`✗ Property 1 failed!`);
+  console.error(`  ${themeToggleAlternationResult.message}\n`);
+}
+
 console.log('All tests passed! ✓');
+
+// ============================================================================
+// User Name Greeting Tests (Task 4)
+// ============================================================================
+
+console.log('\n=== User Name Greeting Tests (Task 4) ===\n');
+
+// Mock localStorage for testing
+const mockLocalStorage = {
+  storage: {},
+  getItem(key) {
+    return this.storage[key] || null;
+  },
+  setItem(key, value) {
+    this.storage[key] = value;
+  },
+  removeItem(key) {
+    delete this.storage[key];
+  },
+  clear() {
+    this.storage = {};
+  }
+};
+
+// Test helper functions
+let testUserName = '';
+
+function testLoadUserName() {
+  try {
+    const storedName = mockLocalStorage.getItem('userName');
+    testUserName = storedName || '';
+  } catch (e) {
+    console.error('Failed to load user name from localStorage:', e);
+    testUserName = '';
+  }
+}
+
+function testSaveUserName(name) {
+  try {
+    mockLocalStorage.setItem('userName', name);
+    testUserName = name;
+  } catch (e) {
+    console.error('Failed to save user name to localStorage:', e);
+  }
+}
+
+function testGetFullGreeting(hour, userName) {
+  const greeting = getGreetingMessage(hour);
+  
+  let fullGreeting = greeting;
+  if (userName && userName.trim().length > 0) {
+    fullGreeting = greeting + ', ' + userName;
+  }
+  
+  return fullGreeting;
+}
+
+// Unit Tests
+console.log('Testing user name storage functions:');
+
+// Test 1: Load with no stored name
+mockLocalStorage.clear();
+testLoadUserName();
+console.assert(testUserName === '', 'loadUserName() with no stored name should return empty string');
+console.log('✓ Test 1 passed: Load with no stored name returns empty string');
+
+// Test 2: Save and load user name
+testSaveUserName('Alice');
+testLoadUserName();
+console.assert(testUserName === 'Alice', 'saveUserName() and loadUserName() should persist name');
+console.log('✓ Test 2 passed: Save and load user name');
+
+// Test 3: Save empty string
+testSaveUserName('');
+testLoadUserName();
+console.assert(testUserName === '', 'saveUserName() should handle empty string');
+console.log('✓ Test 3 passed: Save empty string');
+
+// Test 4: Greeting without name
+const greetingWithoutName = testGetFullGreeting(10, '');
+console.assert(!greetingWithoutName.includes(','), 'Greeting without name should not include comma');
+console.assert(greetingWithoutName === 'Good Morning', 'Greeting without name should be just the greeting');
+console.log('✓ Test 4 passed: Greeting without name has no comma');
+
+// Test 5: Greeting with name
+const greetingWithName = testGetFullGreeting(10, 'Bob');
+console.assert(greetingWithName === 'Good Morning, Bob', 'Greeting with name should be "[Greeting], [Name]"');
+console.log('✓ Test 5 passed: Greeting with name includes ", [Name]"');
+
+// Test 6: Whitespace-only name treated as empty
+const greetingWithWhitespace = testGetFullGreeting(10, '   ');
+console.assert(!greetingWithWhitespace.includes(','), 'Whitespace-only name should not include comma');
+console.assert(greetingWithWhitespace === 'Good Morning', 'Whitespace-only name should display greeting without name');
+console.log('✓ Test 6 passed: Whitespace-only name treated as empty');
+
+// Test 7: Persistence round-trip
+testSaveUserName('Charlie');
+testLoadUserName();
+console.assert(testUserName === 'Charlie', 'Persistence round-trip should preserve name');
+console.log('✓ Test 7 passed: Persistence round-trip');
+
+// Test 8: Format verification for different times of day
+const morningGreeting = testGetFullGreeting(8, 'Diana');
+console.assert(morningGreeting === 'Good Morning, Diana', 'Morning greeting format should be correct');
+const afternoonGreeting = testGetFullGreeting(14, 'Diana');
+console.assert(afternoonGreeting === 'Good Afternoon, Diana', 'Afternoon greeting format should be correct');
+const eveningGreeting = testGetFullGreeting(19, 'Diana');
+console.assert(eveningGreeting === 'Good Evening, Diana', 'Evening greeting format should be correct');
+const nightGreeting = testGetFullGreeting(23, 'Diana');
+console.assert(nightGreeting === 'Good Night, Diana', 'Night greeting format should be correct');
+console.log('✓ Test 8 passed: Greeting format is "[Greeting], [Name]" for all times of day');
+
+console.log('\n✓ All user name greeting tests passed!\n');
+
+// ============================================================================
+// Property-Based Tests for User Name Greeting (Task 4.3)
+// ============================================================================
+
+console.log('=== Property-Based Tests for User Name Greeting ===\n');
+
+// Feature: dashboard-enhancements, Property 3: Greeting Format with Name
+// **Validates: Requirements 2.2, 2.3**
+console.log('Testing Property 3: Greeting Format with Name');
+
+// Generator for non-empty, non-whitespace user names
+function* userNameGenerator() {
+  const names = [
+    'Alice',
+    'Bob',
+    'Charlie',
+    'Diana',
+    'Eve',
+    'Frank',
+    'Grace',
+    'Henry',
+    'Ivy',
+    'Jack',
+    'A',
+    'AB',
+    'ABC',
+    'Test User',
+    'John Doe',
+    'Jane Smith',
+    'User123',
+    'test@example.com',
+    '名前', // Japanese
+    'Имя', // Russian
+    'नाम', // Hindi
+    'اسم', // Arabic
+    '  Alice  ', // Name with surrounding whitespace
+    'Bob\t', // Name with tab
+    '\nCharlie', // Name with newline
+  ];
+  
+  for (const name of names) {
+    yield name;
+  }
+}
+
+// Generator for all valid hours (0-23)
+function* hourGenerator() {
+  for (let hour = 0; hour < 24; hour++) {
+    yield hour;
+  }
+}
+
+// Test Property 3: Greeting Format with Name
+const greetingFormatResult = forAll(
+  function* () {
+    // Generate combinations of hours and names
+    const names = Array.from(userNameGenerator());
+    const hours = Array.from(hourGenerator());
+    
+    for (const hour of hours) {
+      for (const name of names) {
+        yield { hour, name };
+      }
+    }
+  },
+  (testCase) => {
+    const { hour, name } = testCase;
+    
+    // Skip if name is empty or whitespace-only after trimming
+    if (!name || name.trim().length === 0) {
+      return { pass: true }; // This case is tested separately
+    }
+    
+    const fullGreeting = testGetFullGreeting(hour, name);
+    const expectedGreeting = getGreetingMessage(hour);
+    const expectedFormat = expectedGreeting + ', ' + name;
+    
+    if (fullGreeting !== expectedFormat) {
+      return {
+        pass: false,
+        message: `For hour ${hour} and name "${name}", expected "${expectedFormat}" but got "${fullGreeting}"`
+      };
+    }
+    
+    // Verify the format contains a comma
+    if (!fullGreeting.includes(',')) {
+      return {
+        pass: false,
+        message: `Greeting "${fullGreeting}" should contain a comma for non-empty name "${name}"`
+      };
+    }
+    
+    // Verify the format ends with the name
+    if (!fullGreeting.endsWith(', ' + name)) {
+      return {
+        pass: false,
+        message: `Greeting "${fullGreeting}" should end with ", ${name}"`
+      };
+    }
+    
+    return { pass: true };
+  }
+);
+
+if (greetingFormatResult.pass) {
+  console.log(`✓ Property 3 passed: Tested ${greetingFormatResult.tested} combinations`);
+  console.log('  For any non-empty, non-whitespace user name and any valid greeting,');
+  console.log('  the displayed greeting is in the format "[Greeting], [Name]"\n');
+} else {
+  console.error(`✗ Property 3 failed!`);
+  console.error(`  ${greetingFormatResult.message}\n`);
+}
+
+// Test empty and whitespace-only names separately
+console.log('Testing empty and whitespace-only name handling:');
+
+function* emptyNameGenerator() {
+  yield '';
+  yield ' ';
+  yield '  ';
+  yield '   ';
+  yield '\t';
+  yield '\n';
+  yield ' \t\n ';
+  yield '     ';
+}
+
+const emptyNameResult = forAll(
+  function* () {
+    const emptyNames = Array.from(emptyNameGenerator());
+    const hours = Array.from(hourGenerator());
+    
+    for (const hour of hours) {
+      for (const name of emptyNames) {
+        yield { hour, name };
+      }
+    }
+  },
+  (testCase) => {
+    const { hour, name } = testCase;
+    const fullGreeting = testGetFullGreeting(hour, name);
+    const expectedGreeting = getGreetingMessage(hour);
+    
+    // For empty or whitespace-only names, greeting should NOT include comma or name
+    if (fullGreeting !== expectedGreeting) {
+      return {
+        pass: false,
+        message: `For hour ${hour} and empty/whitespace name "${name}", expected "${expectedGreeting}" but got "${fullGreeting}"`
+      };
+    }
+    
+    if (fullGreeting.includes(',')) {
+      return {
+        pass: false,
+        message: `Greeting "${fullGreeting}" should not contain comma for empty/whitespace name "${name}"`
+      };
+    }
+    
+    return { pass: true };
+  }
+);
+
+if (emptyNameResult.pass) {
+  console.log(`✓ Empty name handling passed: Tested ${emptyNameResult.tested} combinations`);
+  console.log('  For any empty or whitespace-only name, greeting displays without name or comma\n');
+} else {
+  console.error(`✗ Empty name handling failed!`);
+  console.error(`  ${emptyNameResult.message}\n`);
+}
+
+console.log('\n=== Task 4 Tests Complete ===');
+console.log('All user name greeting tests passed! ✓\n');

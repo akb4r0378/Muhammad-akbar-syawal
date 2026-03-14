@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 10 Manual Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .panel {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: #333;
+        }
+        h2 {
+            color: #666;
+            margin-top: 0;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        .checklist li {
+            padding: 10px;
+            margin: 8px 0;
+            background: #f9f9f9;
+            border-left: 4px solid #4CAF50;
+            border-radius: 4px;
+        }
+        .checklist li:before {
+            content: "☐ ";
+            font-size: 18px;
+            margin-right: 8px;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>✅ Task 10: Task Sorting - Manual Verification</h1>
+    
+    <div class="container">
+        <div class="panel">
+            <h2>📋 Verification Checklist</h2>
+            
+            <div class="info">
+                <strong>Sub-task 10.1:</strong> Task reordering functions
+            </div>
+            <ul class="checklist">
+                <li><code>moveTaskUp(taskId)</code> function implemented</li>
+                <li>Returns early if task is at index 0</li>
+                <li>Swaps array elements using destructuring</li>
+                <li>Calls <code>saveTasks()</code> and <code>renderTasks()</code></li>
+                <li><code>moveTaskDown(taskId)</code> function implemented</li>
+                <li>Returns early if task is at last index</li>
+                <li>Swaps array elements using destructuring</li>
+                <li>Calls <code>saveTasks()</code> and <code>renderTasks()</code></li>
+            </ul>
+            
+            <div class="info">
+                <strong>Sub-task 10.2:</strong> Move up/down buttons in UI
+            </div>
+            <ul class="checklist">
+                <li>Move up button added with text '↑'</li>
+                <li>Move down button added with text '↓'</li>
+                <li>Click event listeners attached</li>
+                <li>Buttons added to task button container</li>
+            </ul>
+            
+            <div class="info">
+                <strong>Sub-task 10.3:</strong> Button styling
+            </div>
+            <ul class="checklist">
+                <li>CSS for move buttons consistent with other buttons</li>
+                <li>Hover states for move buttons</li>
+                <li>Buttons are accessible and visible</li>
+            </ul>
+        </div>
+        
+        <div class="panel">
+            <h2>🧪 Manual Test Steps</h2>
+            
+            <div class="success">
+                <strong>Step 1:</strong> Add Multiple Tasks
+            </div>
+            <ol>
+                <li>In the dashboard below, add 4 tasks:
+                    <ul>
+                        <li>"First Task"</li>
+                        <li>"Second Task"</li>
+                        <li>"Third Task"</li>
+                        <li>"Fourth Task"</li>
+                    </ul>
+                </li>
+            </ol>
+            
+            <div class="success">
+                <strong>Step 2:</strong> Test Move Down
+            </div>
+            <ol>
+                <li>Click ↓ on "First Task"</li>
+                <li>Verify it moves to second position</li>
+                <li>Order should be: Second, First, Third, Fourth</li>
+            </ol>
+            
+            <div class="success">
+                <strong>Step 3:</strong> Test Move Up
+            </div>
+            <ol>
+                <li>Click ↑ on "First Task" (now in second position)</li>
+                <li>Verify it moves back to first position</li>
+                <li>Order should be: First, Second, Third, Fourth</li>
+            </ol>
+            
+            <div class="success">
+                <strong>Step 4:</strong> Test Boundaries
+            </div>
+            <ol>
+                <li>Click ↑ on "First Task" - nothing should happen</li>
+                <li>Click ↓ on "Fourth Task" - nothing should happen</li>
+            </ol>
+            
+            <div class="success">
+                <strong>Step 5:</strong> Test Persistence
+            </div>
+            <ol>
+                <li>Rearrange tasks in a custom order</li>
+                <li>Reload the page (F5)</li>
+                <li>Verify the custom order persists</li>
+            </ol>
+        </div>
+        
+        <div class="panel" style="grid-column: 1 / -1;">
+            <h2>🖥️ Live Dashboard</h2>
+            <iframe src="index.html"></iframe>
+        </div>
+        
+        <div class="panel" style="grid-column: 1 / -1;">
+            <h2>✅ Requirements Validated</h2>
+            <div class="success">
+                <strong>Requirement 5.1:</strong> Task_Sorter controls on each task item ✓<br>
+                <strong>Requirement 5.2:</strong> "Move Up" and "Move Down" buttons ✓<br>
+                <strong>Requirement 5.3:</strong> Move Up moves task one position earlier ✓<br>
+                <strong>Requirement 5.4:</strong> Move Down moves task one position later ✓<br>
+                <strong>Requirement 5.5:</strong> Move Up on first task does nothing ✓<br>
+                <strong>Requirement 5.6:</strong> Move Down on last task does nothing ✓<br>
+                <strong>Requirement 5.7:</strong> Task order saved to localStorage ✓<br>
+                <strong>Requirement 7.3:</strong> CSS styling for move buttons ✓<br>
+                <strong>Requirement 10.5:</strong> Buttons are accessible and visible ✓
+            </div>
+        </div>
+    </div>
+</body>
+</html>

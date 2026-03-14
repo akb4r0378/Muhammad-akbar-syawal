@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LocalStorage Error Handling Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+    .test-section {
+      margin: 20px 0;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    .test-result {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 3px;
+    }
+    .pass {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .fail {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    button {
+      margin: 5px;
+      padding: 8px 15px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>LocalStorage Error Handling Test - Task 12.1</h1>
+  
+  <div class="test-section">
+    <h2>Test 1: Normal Operation</h2>
+    <button onclick="testNormalOperation()">Run Test</button>
+    <div id="test1-result"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>Test 2: QuotaExceededError Simulation</h2>
+    <button onclick="testQuotaExceeded()">Run Test</button>
+    <div id="test2-result"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>Test 3: SecurityError Simulation</h2>
+    <button onclick="testSecurityError()">Run Test</button>
+    <div id="test3-result"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>Test 4: Fallback Behavior</h2>
+    <button onclick="testFallbackBehavior()">Run Test</button>
+    <div id="test4-result"></div>
+  </div>
+
+  <script>
+    // Copy the relevant functions from app.js for testing
+    
+    // Task state
+    let tasks = [];
+    let localStorageAvailable = true;
+
+    // Links state
+    let links = [];
+    let linksStorageAvailable = true;
+
+    function generateId() {
+      return Date.now().toString() + Math.random().toString(36).substring(2, 11);
+    }
+
+    function saveTasks() {
+      if (!localStorageAvailable) {
+        return;
+      }
+      
+      try {
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+      } catch (e) {
+        if (e.name === 'QuotaExceededError') {
+          console.error('localStorage quota exceeded. Tasks will only persist in memory for this session.');
+          localStorageAvailable = false;
+        } else if (e.name === 'SecurityError') {
+          console.error('localStorage access denied. Tasks will only persist in memory for this session.');
+          localStorageAvailable = false;
+        } else {
+          console.error('Failed to save tasks to localStorage:', e);
+          localStorageAvailable = false;
+        }
+      }
+    }
+
+    function loadTasks() {
+      try {
+        const storedTasks = localStorage.getItem('tasks');
+        if (storedTasks) {
+          tasks = JSON.parse(storedTasks);
+        } else {
+          tasks = [];
+        }
+      } catch (e) {
+        if (e.name === 'SecurityError') {
+          console.error('localStorage access denied. Starting with empty task list.');
+          localStorageAvailable = false;
+        } else {
+          console.error('Failed to load tasks from localStorage:', e);
+        }
+        tasks = [];
+      }
+    }
+
+    function saveLinks() {
+      if (!linksStorageAvailable) {
+        return;
+      }
+      
+      try {
+        localStorage.setItem('links', JSON.stringify(links));
+      } catch (e) {
+        if (e.name === 'QuotaExceededError') {
+          console.error('localStorage quota exceeded. Links will only persist in memory for this session.');
+          linksStorageAvailable = false;
+        } else if (e.name === 'SecurityError') {
+          console.error('localStorage access denied. Links will only persist in memory for this session.');
+          linksStorageAvailable = false;
+        } else {
+          console.error('Failed to save links to localStorage:', e);
+          linksStorageAvailable = false;
+        }
+      }
+    }
+
+    function loadLinks() {
+      try {
+        const storedLinks = localStorage.getItem('links');
+        if (storedLinks) {
+          links = JSON.parse(storedLinks);
+        } else {
+          links = [];
+        }
+      } catch (e) {
+        if (e.name === 'SecurityError') {
+          console.error('localStorage access denied. Starting with empty links list.');
+          linksStorageAvailable = false;
+        } else {
+          console.error('Failed to load links from localStorage:', e);
+        }
+        links = [];
+      }
+    }
+
+    // Test functions
+    function testNormalOperation() {
+      const resultDiv = document.getElementById('test1-result');
+      try {
+        // Reset state
+        localStorageAvailable = true;
+        linksStorageAvailable = true;
+        tasks = [];
+        links = [];
+        localStorage.clear();
+        
+        // Test tasks
+        tasks.push({ id: generateId(), text: 'Test task', completed: false });
+        saveTasks();
+        tasks = [];
+        loadTasks();
+        
+        // Test links
+        links.push({ id: generateId(), name: 'Test', url: 'https://test.com' });
+        saveLinks();
+        links = [];
+        loadLinks();
+        
+        if (tasks.length === 1 && links.length === 1) {
+          resultDiv.innerHTML = '<div class="test-result pass">✓ PASS: Normal save/load operations work correctly</div>';
+        } else {
+          resultDiv.innerHTML = '<div class="test-result fail">✗ FAIL: Data not persisted correctly</div>';
+        }
+      } catch (e) {
+        resultDiv.innerHTML = `<div class="test-result fail">✗ FAIL: ${e.message}</div>`;
+      }
+    }
+
+    function testQuotaExceeded() {
+      const resultDiv = document.getElementById('test2-result');
+      try {
+        // Reset state
+        localStorageAvailable = true;
+        linksStorageAvailable = true;
+        tasks = [];
+        
+        // Mock localStorage.setItem to throw QuotaExceededError
+        const originalSetItem = localStorage.setItem;
+        localStorage.setItem = function() {
+          const error = new Error('QuotaExceededError');
+          error.name = 'QuotaExceededError';
+          throw error;
+        };
+        
+        // Try to save tasks
+        tasks.push({ id: generateId(), text: 'Test task', completed: false });
+        saveTasks();
+        
+        // Restore original function
+        localStorage.setItem = originalSetItem;
+        
+        // Check that flag was set and app continues to work
+        if (!localStorageAvailable && tasks.length === 1) {
+          resultDiv.innerHTML = '<div class="test-result pass">✓ PASS: QuotaExceededError handled, fallback to in-memory storage</div>';
+        } else {
+          resultDiv.innerHTML = '<div class="test-result fail">✗ FAIL: QuotaExceededError not handled correctly</div>';
+        }
+      } catch (e) {
+        resultDiv.innerHTML = `<div class="test-result fail">✗ FAIL: ${e.message}</div>`;
+      }
+    }
+
+    function testSecurityError() {
+      const resultDiv = document.getElementById('test3-result');
+      try {
+        // Reset state
+        localStorageAvailable = true;
+        tasks = [];
+        
+        // Mock localStorage.setItem to throw SecurityError
+        const originalSetItem = localStorage.setItem;
+        localStorage.setItem = function() {
+          const error = new Error('SecurityError');
+          error.name = 'SecurityError';
+          throw error;
+        };
+        
+        // Try to save tasks
+        tasks.push({ id: generateId(), text: 'Test task', completed: false });
+        saveTasks();
+        
+        // Restore original function
+        localStorage.setItem = originalSetItem;
+        
+        // Check that flag was set and app continues to work
+        if (!localStorageAvailable && tasks.length === 1) {
+          resultDiv.innerHTML = '<div class="test-result pass">✓ PASS: SecurityError handled, fallback to in-memory storage</div>';
+        } else {
+          resultDiv.innerHTML = '<div class="test-result fail">✗ FAIL: SecurityError not handled correctly</div>';
+        }
+      } catch (e) {
+        resultDiv.innerHTML = `<div class="test-result fail">✗ FAIL: ${e.message}</div>`;
+      }
+    }
+
+    function testFallbackBehavior() {
+      const resultDiv = document.getElementById('test4-result');
+      try {
+        // Reset state
+        localStorageAvailable = false; // Simulate localStorage unavailable
+        tasks = [];
+        
+        // Add tasks and try to save
+        tasks.push({ id: generateId(), text: 'Task 1', completed: false });
+        saveTasks(); // Should return early without error
+        
+        tasks.push({ id: generateId(), text: 'Task 2', completed: false });
+        saveTasks(); // Should return early without error
+        
+        // Check that tasks are still in memory
+        if (tasks.length === 2 && tasks[0].text === 'Task 1' && tasks[1].text === 'Task 2') {
+          resultDiv.innerHTML = '<div class="test-result pass">✓ PASS: Fallback behavior works - data persists in memory when localStorage unavailable</div>';
+        } else {
+          resultDiv.innerHTML = '<div class="test-result fail">✗ FAIL: Fallback behavior not working correctly</div>';
+        }
+      } catch (e) {
+        resultDiv.innerHTML = `<div class="test-result fail">✗ FAIL: ${e.message}</div>`;
+      }
+    }
+  </script>
+</body>
+</html>

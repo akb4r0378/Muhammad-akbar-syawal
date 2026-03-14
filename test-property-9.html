@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property 9: Empty Link Prevention Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        #results {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .pass {
+            color: green;
+        }
+        .fail {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Property 9: Empty Link Prevention Test</h1>
+    <p><strong>Validates: Requirements 5.5, 5.6</strong></p>
+    <p>Testing that no link with empty name or URL can be created</p>
+    <div id="results">Running tests...</div>
+    
+    <script>
+        // Copy necessary functions from app.js for testing
+        function generateId() {
+            return Date.now().toString() + Math.random().toString(36).substring(2, 11);
+        }
+        
+        // Test helper: simulate addLink behavior
+        function testAddLink(name, url) {
+            const testLinks = [];
+            
+            // Replicate addLink validation logic from app.js
+            if (!name || name.trim().length === 0 || !url || url.trim().length === 0) {
+                return { created: false, links: testLinks };
+            }
+            
+            const newLink = {
+                id: generateId(),
+                name: name.trim(),
+                url: url.trim()
+            };
+            
+            testLinks.push(newLink);
+            return { created: true, links: testLinks };
+        }
+        
+        // Simple property-based testing framework
+        function forAll(generator, property) {
+            const results = [];
+            for (const value of generator()) {
+                const result = property(value);
+                if (!result.pass) {
+                    return {
+                        pass: false,
+                        counterexample: value,
+                        message: result.message
+                    };
+                }
+                results.push(result);
+            }
+            return { pass: true, tested: results.length };
+        }
+        
+        // Generate test cases for empty/whitespace strings
+        function* emptyStringGenerator() {
+            const emptyStrings = [
+                '',
+                ' ',
+                '  ',
+                '   ',
+                '\t',
+                '\n',
+                ' \t\n ',
+                '     '
+            ];
+            
+            const validStrings = [
+                'Google',
+                'https://example.com',
+                'My Link',
+                'a',
+                ' valid ',
+                'test'
+            ];
+            
+            // Test empty name with valid URL
+            for (const emptyStr of emptyStrings) {
+                for (const validUrl of validStrings) {
+                    yield { name: emptyStr, url: validUrl, shouldFail: true, reason: 'empty name' };
+                }
+            }
+            
+            // Test valid name with empty URL
+            for (const validName of validStrings) {
+                for (const emptyStr of emptyStrings) {
+                    yield { name: validName, url: emptyStr, shouldFail: true, reason: 'empty URL' };
+                }
+            }
+            
+            // Test both empty
+            for (const emptyStr1 of emptyStrings) {
+                for (const emptyStr2 of emptyStrings) {
+                    yield { name: emptyStr1, url: emptyStr2, shouldFail: true, reason: 'both empty' };
+                }
+            }
+            
+            // Test valid combinations
+            for (const validName of validStrings) {
+                for (const validUrl of validStrings) {
+                    yield { name: validName, url: validUrl, shouldFail: false, reason: 'both valid' };
+                }
+            }
+        }
+        
+        // Run the property test
+        const resultsDiv = document.getElementById('results');
+        let output = 'Testing Property 9: Empty Link Prevention\n\n';
+        
+        const emptyLinkPreventionResult = forAll(
+            emptyStringGenerator,
+            (testCase) => {
+                const result = testAddLink(testCase.name, testCase.url);
+                
+                if (testCase.shouldFail) {
+                    // Link should NOT be created
+                    if (result.created) {
+                        return {
+                            pass: false,
+                            message: `addLink("${testCase.name}", "${testCase.url}") created a link but should have rejected it (${testCase.reason})`
+                        };
+                    }
+                    
+                    if (result.links.length > 0) {
+                        return {
+                            pass: false,
+                            message: `addLink("${testCase.name}", "${testCase.url}") added link to array but should have rejected it (${testCase.reason})`
+                        };
+                    }
+                } else {
+                    // Link SHOULD be created
+                    if (!result.created) {
+                        return {
+                            pass: false,
+                            message: `addLink("${testCase.name}", "${testCase.url}") rejected valid link (${testCase.reason})`
+                        };
+                    }
+                    
+                    if (result.links.length !== 1) {
+                        return {
+                            pass: false,
+                            message: `addLink("${testCase.name}", "${testCase.url}") should have created exactly 1 link but created ${result.links.length}`
+                        };
+                    }
+                    
+                    // Verify the link has non-empty trimmed values
+                    const link = result.links[0];
+                    if (link.name.trim().length === 0) {
+                        return {
+                            pass: false,
+                            message: `Created link has empty name after trim: "${link.name}"`
+                        };
+                    }
+                    
+                    if (link.url.trim().length === 0) {
+                        return {
+                            pass: false,
+                            message: `Created link has empty URL after trim: "${link.url}"`
+                        };
+                    }
+                }
+                
+                return { pass: true };
+            }
+        );
+        
+        if (emptyLinkPreventionResult.pass) {
+            output += `✓ Property 9 passed: Tested ${emptyLinkPreventionResult.tested} test cases\n`;
+            output += '  Empty or whitespace-only names/URLs are correctly rejected\n';
+            output += '  Valid non-empty strings successfully create links\n';
+            output += '  All created links have non-empty trimmed name and URL\n\n';
+            output += 'All tests passed! ✓';
+            resultsDiv.className = 'pass';
+        } else {
+            output += `✗ Property 9 failed!\n`;
+            output += `  ${emptyLinkPreventionResult.message}\n`;
+            resultsDiv.className = 'fail';
+        }
+        
+        resultsDiv.textContent = output;
+        console.log(output);
+    </script>
+</body>
+</html>

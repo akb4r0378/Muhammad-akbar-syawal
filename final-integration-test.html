@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Integration Test - Dashboard Enhancements</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-result {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+        .pass {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .fail {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .summary {
+            font-size: 1.2em;
+            font-weight: bold;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        h1 {
+            color: #333;
+        }
+        h2 {
+            color: #555;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .task-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .completed {
+            background: #28a745;
+            color: white;
+        }
+        .in-progress {
+            background: #ffc107;
+            color: #333;
+        }
+        .not-started {
+            background: #6c757d;
+            color: white;
+        }
+        .optional {
+            background: #17a2b8;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Final Integration Test - Dashboard Enhancements</h1>
+    
+    <div id="test-results"></div>
+    
+    <script src="js/app.js"></script>
+    <script>
+        const results = [];
+        
+        function addResult(category, test, passed, message = '') {
+            results.push({ category, test, passed, message });
+            renderResults();
+        }
+        
+        function renderResults() {
+            const container = document.getElementById('test-results');
+            const categories = {};
+            
+            // Group by category
+            results.forEach(r => {
+                if (!categories[r.category]) {
+                    categories[r.category] = [];
+                }
+                categories[r.category].push(r);
+            });
+            
+            let html = '';
+            
+            // Render each category
+            for (const [category, tests] of Object.entries(categories)) {
+                const passed = tests.filter(t => t.passed).length;
+                const total = tests.length;
+                const allPassed = passed === total;
+                
+                html += `
+                    <div class="test-section">
+                        <h2>${category} (${passed}/${total} passed)</h2>
+                `;
+                
+                tests.forEach(t => {
+                    html += `
+                        <div class="test-result ${t.passed ? 'pass' : 'fail'}">
+                            ${t.passed ? '✓' : '✗'} ${t.test}
+                            ${t.message ? `<br><small>${t.message}</small>` : ''}
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+            }
+            
+            // Summary
+            const totalPassed = results.filter(r => r.passed).length;
+            const totalTests = results.length;
+            const allTestsPassed = totalPassed === totalTests;
+            
+            html = `
+                <div class="summary ${allTestsPassed ? 'pass' : 'fail'}">
+                    Overall: ${totalPassed}/${totalTests} tests passed
+                    ${allTestsPassed ? '🎉 All tests passed!' : '⚠️ Some tests failed'}
+                </div>
+            ` + html;
+            
+            container.innerHTML = html;
+        }
+        
+        // Run all tests
+        console.log('Starting Final Integration Tests...\n');
+        
+        // ============================================================================
+        // Task 1: Theme Toggle Functionality
+        // ============================================================================
+        
+        console.log('Testing Task 1: Theme Toggle Functionality');
+        
+        // Test 1.1: Theme state management
+        try {
+            localStorage.clear();
+            loadTheme();
+            addResult('Task 1: Theme Toggle', 'Theme loads with default value', 
+                currentTheme === 'light', `Current theme: ${currentTheme}`);
+        } catch (e) {
+            addResult('Task 1: Theme Toggle', 'Theme loads with default value', false, e.message);
+        }
+        
+        // Test 1.2: Theme toggle
+        try {
+            currentTheme = 'light';
+            toggleTheme();
+            addResult('Task 1: Theme Toggle', 'Toggle from light to dark', 
+                currentTheme === 'dark', `Current theme: ${currentTheme}`);
+            
+            toggleTheme();
+            addResult('Task 1: Theme Toggle', 'Toggle from dark to light', 
+                currentTheme === 'light', `Current theme: ${currentTheme}`);
+        } catch (e) {
+            addResult('Task 1: Theme Toggle', 'Theme toggle', false, e.message);
+        }
+        
+        // Test 1.3: Theme persistence
+        try {
+            currentTheme = 'dark';
+            saveTheme();
+            loadTheme();
+            addResult('Task 1: Theme Toggle', 'Theme persistence (dark)', 
+                currentTheme === 'dark', `Loaded theme: ${currentTheme}`);
+            
+            currentTheme = 'light';
+            saveTheme();
+            loadTheme();
+            addResult('Task 1: Theme Toggle', 'Theme persistence (light)', 
+                currentTheme === 'light', `Loaded theme: ${currentTheme}`);
+        } catch (e) {
+            addResult('Task 1: Theme Toggle', 'Theme persistence', false, e.message);
+        }
+        
+        // ============================================================================
+        // Task 2: Dark Mode CSS
+        // ============================================================================
+        
+        console.log('Testing Task 2: Dark Mode CSS');
+        
+        // Test 2.1: Theme application
+        try {
+            applyTheme('dark');
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            addResult('Task 2: Dark Mode CSS', 'Apply dark theme', isDark);
+            
+            applyTheme('light');
+            const isLight = document.body.getAttribute('data-theme') === 'light';
+            addResult('Task 2: Dark Mode CSS', 'Apply light theme', isLight);
+        } catch (e) {
+            addResult('Task 2: Dark Mode CSS', 'Theme application', false, e.message);
+        }
+        
+        // ============================================================================
+        // Task 4: Custom Name in Greeting
+        // ============================================================================
+        
+        console.log('Testing Task 4: Custom Name in Greeting');
+        
+        // Test 4.1: User name storage
+        try {
+            localStorage.clear();
+            loadUserName();
+            addResult('Task 4: Custom Name', 'Load with no stored name', 
+                userName === '', `User name: "${userName}"`);
+            
+            saveUserName('Alice');
+            loadUserName();
+            addResult('Task 4: Custom Name', 'Save and load user name', 
+                userName === 'Alice', `User name: "${userName}"`);
+        } catch (e) {
+            addResult('Task 4: Custom Name', 'User name storage', false, e.message);
+        }
+        
+        // Test 4.2: Greeting format
+        try {
+            userName = 'Bob';
+            updateGreeting();
+            const greetingText = document.getElementById('greeting-message').textContent;
+            const hasComma = greetingText.includes(',');
+            const hasName = greetingText.includes('Bob');
+            addResult('Task 4: Custom Name', 'Greeting includes name with comma', 
+                hasComma && hasName, `Greeting: "${greetingText}"`);
+            
+            userName = '';
+            updateGreeting();
+            const greetingWithoutName = document.getElementById('greeting-message').textContent;
+            const noComma = !greetingWithoutName.includes(',');
+            addResult('Task 4: Custom Name', 'Greeting without name has no comma', 
+                noComma, `Greeting: "${greetingWithoutName}"`);
+        } catch (e) {
+            addResult('Task 4: Custom Name', 'Greeting format', false, e.message);
+        }
+        
+        // ============================================================================
+        // Task 7: Customizable Timer Duration
+        // ============================================================================
+        
+        console.log('Testing Task 7: Customizable Timer Duration');
+        
+        // Test 7.1: Timer duration storage
+        try {
+            localStorage.clear();
+            loadTimerDuration();
+            addResult('Task 7: Timer Duration', 'Default timer duration is 25', 
+                timerDuration === 25, `Timer duration: ${timerDuration}`);
+            
+            const saved = saveTimerDuration(30);
+            loadTimerDuration();
+            addResult('Task 7: Timer Duration', 'Save and load timer duration', 
+                saved && timerDuration === 30, `Timer duration: ${timerDuration}`);
+        } catch (e) {
+            addResult('Task 7: Timer Duration', 'Timer duration storage', false, e.message);
+        }
+        
+        // Test 7.2: Timer duration validation
+        try {
+            const tooLow = saveTimerDuration(0);
+            addResult('Task 7: Timer Duration', 'Reject duration < 1', 
+                !tooLow, `saveTimerDuration(0) returned: ${tooLow}`);
+            
+            const tooHigh = saveTimerDuration(121);
+            addResult('Task 7: Timer Duration', 'Reject duration > 120', 
+                !tooHigh, `saveTimerDuration(121) returned: ${tooHigh}`);
+            
+            const valid = saveTimerDuration(60);
+            addResult('Task 7: Timer Duration', 'Accept valid duration (60)', 
+                valid, `saveTimerDuration(60) returned: ${valid}`);
+        } catch (e) {
+            addResult('Task 7: Timer Duration', 'Timer duration validation', false, e.message);
+        }
+        
+        // Test 7.3: Timer uses configured duration
+        try {
+            timerDuration = 45;
+            initTimer();
+            addResult('Task 7: Timer Duration', 'Timer initializes with configured duration', 
+                timeRemaining === 45 * 60, `Time remaining: ${timeRemaining} (expected ${45 * 60})`);
+            
+            timerDuration = 10;
+            resetTimer();
+            addResult('Task 7: Timer Duration', 'Timer resets to configured duration', 
+                timeRemaining === 10 * 60, `Time remaining: ${timeRemaining} (expected ${10 * 60})`);
+        } catch (e) {
+            addResult('Task 7: Timer Duration', 'Timer uses configured duration', false, e.message);
+        }
+        
+        // ============================================================================
+        // Task 8: Duplicate Task Prevention
+        // ============================================================================
+        
+        console.log('Testing Task 8: Duplicate Task Prevention');
+        
+        // Test 8.1: Duplicate detection
+        try {
+            tasks = [];
+            addTask('Buy milk');
+            const initialLength = tasks.length;
+            
+            addTask('Buy milk');
+            addResult('Task 8: Duplicate Prevention', 'Prevent exact duplicate', 
+                tasks.length === initialLength, `Tasks length: ${tasks.length} (expected ${initialLength})`);
+            
+            addTask('BUY MILK');
+            addResult('Task 8: Duplicate Prevention', 'Prevent case-insensitive duplicate', 
+                tasks.length === initialLength, `Tasks length: ${tasks.length} (expected ${initialLength})`);
+            
+            addTask('  buy milk  ');
+            addResult('Task 8: Duplicate Prevention', 'Prevent whitespace-trimmed duplicate', 
+                tasks.length === initialLength, `Tasks length: ${tasks.length} (expected ${initialLength})`);
+            
+            addTask('Buy bread');
+            addResult('Task 8: Duplicate Prevention', 'Allow unique task', 
+                tasks.length === initialLength + 1, `Tasks length: ${tasks.length} (expected ${initialLength + 1})`);
+        } catch (e) {
+            addResult('Task 8: Duplicate Prevention', 'Duplicate detection', false, e.message);
+        }
+        
+        // Test 8.2: Duplicate on edit
+        try {
+            tasks = [
+                { id: '1', text: 'Task A', completed: false },
+                { id: '2', text: 'Task B', completed: false }
+            ];
+            
+            editTask('2', 'Task A');
+            const task2 = tasks.find(t => t.id === '2');
+            addResult('Task 8: Duplicate Prevention', 'Prevent duplicate on edit', 
+                task2.text === 'Task B', `Task 2 text: "${task2.text}" (should remain "Task B")`);
+            
+            editTask('2', 'Task C');
+            const task2Updated = tasks.find(t => t.id === '2');
+            addResult('Task 8: Duplicate Prevention', 'Allow unique edit', 
+                task2Updated.text === 'Task C', `Task 2 text: "${task2Updated.text}"`);
+        } catch (e) {
+            addResult('Task 8: Duplicate Prevention', 'Duplicate on edit', false, e.message);
+        }
+        
+        // ============================================================================
+        // Task 10: Task Sorting
+        // ============================================================================
+        
+        console.log('Testing Task 10: Task Sorting');
+        
+        // Test 10.1: Move up
+        try {
+            tasks = [
+                { id: '1', text: 'First', completed: false },
+                { id: '2', text: 'Second', completed: false },
+                { id: '3', text: 'Third', completed: false }
+            ];
+            
+            moveTaskUp('2');
+            addResult('Task 10: Task Sorting', 'Move task up', 
+                tasks[0].id === '2' && tasks[1].id === '1', 
+                `Order: ${tasks.map(t => t.id).join(', ')}`);
+            
+            // Reset
+            tasks = [
+                { id: '1', text: 'First', completed: false },
+                { id: '2', text: 'Second', completed: false }
+            ];
+            
+            moveTaskUp('1');
+            addResult('Task 10: Task Sorting', 'Move up at first position (no-op)', 
+                tasks[0].id === '1', 
+                `Order: ${tasks.map(t => t.id).join(', ')}`);
+        } catch (e) {
+            addResult('Task 10: Task Sorting', 'Move up', false, e.message);
+        }
+        
+        // Test 10.2: Move down
+        try {
+            tasks = [
+                { id: '1', text: 'First', completed: false },
+                { id: '2', text: 'Second', completed: false },
+                { id: '3', text: 'Third', completed: false }
+            ];
+            
+            moveTaskDown('2');
+            addResult('Task 10: Task Sorting', 'Move task down', 
+                tasks[1].id === '3' && tasks[2].id === '2', 
+                `Order: ${tasks.map(t => t.id).join(', ')}`);
+            
+            // Reset
+            tasks = [
+                { id: '1', text: 'First', completed: false },
+                { id: '2', text: 'Second', completed: false }
+            ];
+            
+            moveTaskDown('2');
+            addResult('Task 10: Task Sorting', 'Move down at last position (no-op)', 
+                tasks[1].id === '2', 
+                `Order: ${tasks.map(t => t.id).join(', ')}`);
+        } catch (e) {
+            addResult('Task 10: Task Sorting', 'Move down', false, e.message);
+        }
+        
+        // ============================================================================
+        // Task 13: Backward Compatibility
+        // ============================================================================
+        
+        console.log('Testing Task 13: Backward Compatibility');
+        
+        // Test 13.1: Existing data preservation
+        try {
+            localStorage.clear();
+            
+            // Simulate existing data
+            const existingTasks = [
+                { id: 'old1', text: 'Existing task', completed: false }
+            ];
+            const existingLinks = [
+                { id: 'link1', name: 'Google', url: 'https://google.com' }
+            ];
+            
+            localStorage.setItem('tasks', JSON.stringify(existingTasks));
+            localStorage.setItem('links', JSON.stringify(existingLinks));
+            
+            // Load data
+            loadTasks();
+            loadLinks();
+            
+            addResult('Task 13: Backward Compatibility', 'Preserve existing tasks', 
+                tasks.length === 1 && tasks[0].text === 'Existing task', 
+                `Tasks: ${JSON.stringify(tasks)}`);
+            
+            addResult('Task 13: Backward Compatibility', 'Preserve existing links', 
+                links.length === 1 && links[0].name === 'Google', 
+                `Links: ${JSON.stringify(links)}`);
+        } catch (e) {
+            addResult('Task 13: Backward Compatibility', 'Existing data preservation', false, e.message);
+        }
+        
+        // Test 13.2: Default values for missing settings
+        try {
+            localStorage.clear();
+            
+            loadTheme();
+            loadUserName();
+            loadTimerDuration();
+            
+            addResult('Task 13: Backward Compatibility', 'Default theme when missing', 
+                currentTheme === 'light', `Theme: ${currentTheme}`);
+            
+            addResult('Task 13: Backward Compatibility', 'Default user name when missing', 
+                userName === '', `User name: "${userName}"`);
+            
+            addResult('Task 13: Backward Compatibility', 'Default timer duration when missing', 
+                timerDuration === 25, `Timer duration: ${timerDuration}`);
+        } catch (e) {
+            addResult('Task 13: Backward Compatibility', 'Default values', false, e.message);
+        }
+        
+        // ============================================================================
+        // Settings Panel Integration
+        // ============================================================================
+        
+        console.log('Testing Settings Panel Integration');
+        
+        // Test: Settings panel elements exist
+        try {
+            const nameInput = document.getElementById('name-input');
+            const timerInput = document.getElementById('timer-duration-input');
+            const saveNameBtn = document.getElementById('save-name-btn');
+            const saveTimerBtn = document.getElementById('save-timer-btn');
+            
+            addResult('Settings Panel', 'Name input exists', nameInput !== null);
+            addResult('Settings Panel', 'Timer input exists', timerInput !== null);
+            addResult('Settings Panel', 'Save name button exists', saveNameBtn !== null);
+            addResult('Settings Panel', 'Save timer button exists', saveTimerBtn !== null);
+        } catch (e) {
+            addResult('Settings Panel', 'Elements exist', false, e.message);
+        }
+        
+        // ============================================================================
+        // UI Elements Verification
+        // ============================================================================
+        
+        console.log('Testing UI Elements');
+        
+        // Test: Theme toggle button
+        try {
+            const themeToggle = document.getElementById('theme-toggle');
+            addResult('UI Elements', 'Theme toggle button exists', themeToggle !== null);
+        } catch (e) {
+            addResult('UI Elements', 'Theme toggle button', false, e.message);
+        }
+        
+        console.log('\nAll integration tests complete!');
+    </script>
+</body>
+</html>

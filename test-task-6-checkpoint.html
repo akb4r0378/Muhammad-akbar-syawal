@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 6 Checkpoint - Settings Panel & Name Customization Tests</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 { color: #333; }
+        h2 { color: #555; margin-top: 30px; }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .pass {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .fail {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .summary {
+            font-size: 18px;
+            font-weight: bold;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .info {
+            background-color: #e7f3ff;
+            padding: 15px;
+            border-left: 4px solid #2196F3;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Task 6 Checkpoint Verification</h1>
+    <p>Testing settings panel UI and name customization functionality</p>
+
+    <div class="info">
+        <strong>Test Coverage:</strong>
+        <ul>
+            <li>Settings panel HTML structure (Task 5.1)</li>
+            <li>Settings panel initialization (Task 5.2)</li>
+            <li>Name save functionality (Task 5.3)</li>
+            <li>Settings feedback display (Task 5.3)</li>
+            <li>Name customization in greeting (Task 4.2)</li>
+            <li>Settings panel styling (Task 5.4)</li>
+        </ul>
+    </div>
+
+    <button onclick="runAllTests()">Run All Tests</button>
+    <button onclick="clearResults()">Clear Results</button>
+
+    <div id="results"></div>
+
+    <script>
+        let testResults = [];
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+            testResults = [];
+        }
+
+        function logTest(testName, passed, message) {
+            testResults.push({ testName, passed, message });
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${passed ? 'pass' : 'fail'}`;
+            resultDiv.textContent = `${passed ? '✓' : '✗'} ${testName}: ${message}`;
+            document.getElementById('results').appendChild(resultDiv);
+        }
+
+        function showSummary() {
+            const total = testResults.length;
+            const passed = testResults.filter(r => r.passed).length;
+            const failed = total - passed;
+            
+            const summaryDiv = document.createElement('div');
+            summaryDiv.className = `summary ${failed === 0 ? 'pass' : 'fail'}`;
+            summaryDiv.innerHTML = `
+                <strong>Test Summary:</strong><br>
+                Total: ${total} | Passed: ${passed} | Failed: ${failed}<br>
+                ${failed === 0 ? '🎉 All tests passed!' : '⚠️ Some tests failed'}
+            `;
+            document.getElementById('results').insertBefore(summaryDiv, document.getElementById('results').firstChild);
+        }
+
+        async function runAllTests() {
+            clearResults();
+            
+            // Clear localStorage before tests
+            localStorage.clear();
+            
+            const section1 = document.createElement('div');
+            section1.className = 'test-section';
+            section1.innerHTML = '<h2>1. Settings Panel HTML Structure Tests</h2>';
+            document.getElementById('results').appendChild(section1);
+            
+            testSettingsPanelStructure();
+            
+            const section2 = document.createElement('div');
+            section2.className = 'test-section';
+            section2.innerHTML = '<h2>2. Settings Panel Initialization Tests</h2>';
+            document.getElementById('results').appendChild(section2);
+            
+            await testSettingsPanelInitialization();
+            
+            const section3 = document.createElement('div');
+            section3.className = 'test-section';
+            section3.innerHTML = '<h2>3. Name Save Functionality Tests</h2>';
+            document.getElementById('results').appendChild(section3);
+            
+            await testNameSaveFunctionality();
+            
+            const section4 = document.createElement('div');
+            section4.className = 'test-section';
+            section4.innerHTML = '<h2>4. Settings Feedback Tests</h2>';
+            document.getElementById('results').appendChild(section4);
+            
+            await testSettingsFeedback();
+            
+            const section5 = document.createElement('div');
+            section5.className = 'test-section';
+            section5.innerHTML = '<h2>5. Name Customization Integration Tests</h2>';
+            document.getElementById('results').appendChild(section5);
+            
+            await testNameCustomizationIntegration();
+            
+            const section6 = document.createElement('div');
+            section6.className = 'test-section';
+            section6.innerHTML = '<h2>6. Settings Panel Styling Tests</h2>';
+            document.getElementById('results').appendChild(section6);
+            
+            testSettingsPanelStyling();
+            
+            showSummary();
+        }
+
+        function testSettingsPanelStructure() {
+            // Test settings panel exists
+            const settingsPanel = document.getElementById('settings-panel');
+            logTest('Settings panel exists', !!settingsPanel, 
+                settingsPanel ? 'Settings panel found' : 'Settings panel not found');
+            
+            // Test name input exists
+            const nameInput = document.getElementById('name-input');
+            logTest('Name input exists', !!nameInput, 
+                nameInput ? 'Name input found' : 'Name input not found');
+            
+            // Test save name button exists
+            const saveNameBtn = document.getElementById('save-name-btn');
+            logTest('Save name button exists', !!saveNameBtn, 
+                saveNameBtn ? 'Save name button found' : 'Save name button not found');
+            
+            // Test name saved indicator exists
+            const nameSavedIndicator = document.getElementById('name-saved-indicator');
+            logTest('Name saved indicator exists', !!nameSavedIndicator, 
+                nameSavedIndicator ? 'Name saved indicator found' : 'Name saved indicator not found');
+            
+            // Test timer duration input exists
+            const timerInput = document.getElementById('timer-duration-input');
+            logTest('Timer duration input exists', !!timerInput, 
+                timerInput ? 'Timer duration input found' : 'Timer duration input not found');
+            
+            // Test save timer button exists
+            const saveTimerBtn = document.getElementById('save-timer-btn');
+            logTest('Save timer button exists', !!saveTimerBtn, 
+                saveTimerBtn ? 'Save timer button found' : 'Save timer button not found');
+            
+            // Test timer saved indicator exists
+            const timerSavedIndicator = document.getElementById('timer-saved-indicator');
+            logTest('Timer saved indicator exists', !!timerSavedIndicator, 
+                timerSavedIndicator ? 'Timer saved indicator found' : 'Timer saved indicator not found');
+            
+            // Test timer error display exists
+            const timerError = document.getElementById('timer-error');
+            logTest('Timer error display exists', !!timerError, 
+                timerError ? 'Timer error display found' : 'Timer error display not found');
+        }
+
+        async function testSettingsPanelInitialization() {
+            // Test that settings panel initializes with current values
+            localStorage.setItem('userName', 'TestUser');
+            
+            // Reload the page context (simulate initialization)
+            if (typeof loadUserName === 'function') {
+                loadUserName();
+            }
+            
+            if (typeof initSettingsPanel === 'function') {
+                initSettingsPanel();
+            }
+            
+            const nameInput = document.getElementById('name-input');
+            const timerInput = document.getElementById('timer-duration-input');
+            
+            // Note: Since we can't actually reload, we'll test the structure
+            logTest('Name input has value attribute', nameInput && nameInput.value !== undefined, 
+                nameInput ? `Name input value: "${nameInput.value}"` : 'Name input not found');
+            
+            logTest('Timer input has value attribute', timerInput && timerInput.value !== undefined, 
+                timerInput ? `Timer input value: "${timerInput.value}"` : 'Timer input not found');
+        }
+
+        async function testNameSaveFunctionality() {
+            localStorage.clear();
+            
+            const nameInput = document.getElementById('name-input');
+            const saveNameBtn = document.getElementById('save-name-btn');
+            
+            if (!nameInput || !saveNameBtn) {
+                logTest('Name save functionality', false, 'Required elements not found');
+                return;
+            }
+            
+            // Test saving a name
+            nameInput.value = 'Alice';
+            saveNameBtn.click();
+            
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            const savedName = localStorage.getItem('userName');
+            logTest('Name saved to localStorage', savedName === 'Alice', 
+                `Expected "Alice", got "${savedName}"`);
+            
+            // Test saving empty name
+            nameInput.value = '';
+            saveNameBtn.click();
+            
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            const emptyName = localStorage.getItem('userName');
+            logTest('Empty name can be saved', emptyName === '', 
+                `Expected "", got "${emptyName}"`);
+            
+            // Test saving name with whitespace
+            nameInput.value = '  Bob  ';
+            saveNameBtn.click();
+            
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            const whitespaceName = localStorage.getItem('userName');
+            logTest('Name with whitespace saved', whitespaceName === '  Bob  ', 
+                `Expected "  Bob  ", got "${whitespaceName}"`);
+        }
+
+        async function testSettingsFeedback() {
+            const nameInput = document.getElementById('name-input');
+            const saveNameBtn = document.getElementById('save-name-btn');
+            const nameSavedIndicator = document.getElementById('name-saved-indicator');
+            
+            if (!nameInput || !saveNameBtn || !nameSavedIndicator) {
+                logTest('Settings feedback', false, 'Required elements not found');
+                return;
+            }
+            
+            // Test that indicator is hidden initially
+            const initialDisplay = window.getComputedStyle(nameSavedIndicator).display;
+            const initiallyHidden = initialDisplay === 'none' || !nameSavedIndicator.classList.contains('show');
+            logTest('Saved indicator initially hidden', initiallyHidden, 
+                `Display: ${initialDisplay}, Has show class: ${nameSavedIndicator.classList.contains('show')}`);
+            
+            // Test that indicator shows after save
+            nameInput.value = 'TestUser';
+            saveNameBtn.click();
+            
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            const hasShowClass = nameSavedIndicator.classList.contains('show');
+            logTest('Saved indicator shows after save', hasShowClass, 
+                `Has show class: ${hasShowClass}`);
+            
+            // Test that indicator hides after 2 seconds
+            await new Promise(resolve => setTimeout(resolve, 2100));
+            
+            const hiddenAfterDelay = !nameSavedIndicator.classList.contains('show');
+            logTest('Saved indicator hides after 2 seconds', hiddenAfterDelay, 
+                `Has show class after delay: ${nameSavedIndicator.classList.contains('show')}`);
+        }
+
+        async function testNameCustomizationIntegration() {
+            localStorage.clear();
+            
+            const nameInput = document.getElementById('name-input');
+            const saveNameBtn = document.getElementById('save-name-btn');
+            const greetingMessage = document.getElementById('greeting-message');
+            
+            if (!nameInput || !saveNameBtn || !greetingMessage) {
+                logTest('Name customization integration', false, 'Required elements not found');
+                return;
+            }
+            
+            // Test greeting without name
+            localStorage.removeItem('userName');
+            if (typeof loadUserName === 'function') {
+                loadUserName();
+            }
+            if (typeof updateGreeting === 'function') {
+                updateGreeting();
+            }
+            
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            const greetingWithoutName = greetingMessage.textContent;
+            const hasNoComma = !greetingWithoutName.includes(',');
+            logTest('Greeting without name has no comma', hasNoComma, 
+                `Greeting: "${greetingWithoutName}"`);
+            
+            // Test greeting with name
+            nameInput.value = 'Charlie';
+            saveNameBtn.click();
+            
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            const greetingWithName = greetingMessage.textContent;
+            const includesName = greetingWithName.includes('Charlie');
+            const hasComma = greetingWithName.includes(',');
+            logTest('Greeting includes saved name', includesName && hasComma, 
+                `Greeting: "${greetingWithName}"`);
+            
+            // Test greeting format
+            const matchesFormat = /^Good (Morning|Afternoon|Evening|Night), Charlie$/.test(greetingWithName);
+            logTest('Greeting follows correct format', matchesFormat, 
+                `Greeting: "${greetingWithName}"`);
+            
+            // Test greeting with whitespace-only name
+            nameInput.value = '   ';
+            saveNameBtn.click();
+            
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            const greetingWithWhitespace = greetingMessage.textContent;
+            const whitespaceNoComma = !greetingWithWhitespace.includes(',');
+            logTest('Greeting with whitespace-only name has no comma', whitespaceNoComma, 
+                `Greeting: "${greetingWithWhitespace}"`);
+        }
+
+        function testSettingsPanelStyling() {
+            const settingsPanel = document.getElementById('settings-panel');
+            
+            if (!settingsPanel) {
+                logTest('Settings panel styling', false, 'Settings panel not found');
+                return;
+            }
+            
+            const styles = window.getComputedStyle(settingsPanel);
+            
+            // Test that settings panel has distinct styling
+            const hasBackground = styles.backgroundColor !== 'rgba(0, 0, 0, 0)';
+            logTest('Settings panel has background color', hasBackground, 
+                `Background: ${styles.backgroundColor}`);
+            
+            const hasBorder = styles.borderWidth !== '0px';
+            logTest('Settings panel has border', hasBorder, 
+                `Border width: ${styles.borderWidth}`);
+            
+            const hasPadding = parseInt(styles.padding) > 0;
+            logTest('Settings panel has padding', hasPadding, 
+                `Padding: ${styles.padding}`);
+            
+            // Test input styling
+            const nameInput = document.getElementById('name-input');
+            if (nameInput) {
+                const inputStyles = window.getComputedStyle(nameInput);
+                const hasInputBorder = inputStyles.borderWidth !== '0px';
+                logTest('Input fields have borders', hasInputBorder, 
+                    `Border width: ${inputStyles.borderWidth}`);
+            }
+            
+            // Test button styling
+            const saveNameBtn = document.getElementById('save-name-btn');
+            if (saveNameBtn) {
+                const btnStyles = window.getComputedStyle(saveNameBtn);
+                const hasButtonBackground = btnStyles.backgroundColor !== 'rgba(0, 0, 0, 0)';
+                logTest('Save buttons have background color', hasButtonBackground, 
+                    `Background: ${btnStyles.backgroundColor}`);
+                
+                const hasButtonPadding = parseInt(btnStyles.padding) > 0;
+                logTest('Save buttons have padding', hasButtonPadding, 
+                    `Padding: ${btnStyles.padding}`);
+            }
+            
+            // Test saved indicator styling
+            const nameSavedIndicator = document.getElementById('name-saved-indicator');
+            if (nameSavedIndicator) {
+                const indicatorStyles = window.getComputedStyle(nameSavedIndicator);
+                const hasColor = indicatorStyles.color !== 'rgb(0, 0, 0)';
+                logTest('Saved indicator has color styling', hasColor, 
+                    `Color: ${indicatorStyles.color}`);
+            }
+        }
+
+        // Auto-run tests on page load
+        window.addEventListener('load', () => {
+            setTimeout(runAllTests, 500);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickLinks Test</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .test-result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .pass {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .fail {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <h1>QuickLinks Component Test</h1>
+    
+    <div class="test-section">
+        <h2>Manual Test: Add Links</h2>
+        <div class="link-input-container">
+            <input type="text" id="link-name-input" placeholder="Link name">
+            <input type="text" id="link-url-input" placeholder="URL">
+            <button id="add-link-btn">Add Link</button>
+        </div>
+        <div id="links-container"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Automated Tests</h2>
+        <div id="test-results"></div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        // Wait for app to initialize
+        setTimeout(() => {
+            const results = document.getElementById('test-results');
+            
+            // Clear localStorage before tests
+            localStorage.removeItem('links');
+            
+            // Test 1: Add link with valid data
+            console.log('Test 1: Add link with valid data');
+            addLink('Google', 'https://google.com');
+            const test1Pass = links.length === 1 && 
+                              links[0].name === 'Google' && 
+                              links[0].url === 'https://google.com';
+            results.innerHTML += `<div class="test-result ${test1Pass ? 'pass' : 'fail'}">
+                Test 1: Add link with valid data - ${test1Pass ? 'PASS' : 'FAIL'}
+            </div>`;
+            
+            // Test 2: Prevent empty name
+            console.log('Test 2: Prevent empty name');
+            const beforeLength = links.length;
+            addLink('', 'https://example.com');
+            const test2Pass = links.length === beforeLength;
+            results.innerHTML += `<div class="test-result ${test2Pass ? 'pass' : 'fail'}">
+                Test 2: Prevent empty name - ${test2Pass ? 'PASS' : 'FAIL'}
+            </div>`;
+            
+            // Test 3: Prevent empty URL
+            console.log('Test 3: Prevent empty URL');
+            const beforeLength3 = links.length;
+            addLink('Test', '');
+            const test3Pass = links.length === beforeLength3;
+            results.innerHTML += `<div class="test-result ${test3Pass ? 'pass' : 'fail'}">
+                Test 3: Prevent empty URL - ${test3Pass ? 'PASS' : 'FAIL'}
+            </div>`;
+            
+            // Test 4: Prevent whitespace-only name
+            console.log('Test 4: Prevent whitespace-only name');
+            const beforeLength4 = links.length;
+            addLink('   ', 'https://example.com');
+            const test4Pass = links.length === beforeLength4;
+            results.innerHTML += `<div class="test-result ${test4Pass ? 'pass' : 'fail'}">
+                Test 4: Prevent whitespace-only name - ${test4Pass ? 'PASS' : 'FAIL'}
+            </div>`;
+            
+            // Test 5: Prevent whitespace-only URL
+            console.log('Test 5: Prevent whitespace-only URL');
+            const beforeLength5 = links.length;
+            addLink('Test', '   ');
+            const test5Pass = links.length === beforeLength5;
+            results.innerHTML += `<div class="test-result ${test5Pass ? 'pass' : 'fail'}">
+                Test 5: Prevent whitespace-only URL - ${test5Pass ? 'PASS' : 'FAIL'}
+            </div>`;
+            
+            // Test 6: Trim whitespace from name and URL
+            console.log('Test 6: Trim whitespace from name and URL');
+            addLink('  GitHub  ', '  https://github.com  ');
+            const lastLink = links[links.length - 1];
+            const test6Pass = lastLink.name === 'GitHub' && lastLink.url === 'https://github.com';
+            results.innerHTML += `<div class="test-result ${test6Pass ? 'pass' : 'fail'}">
+                Test 6: Trim whitespace from name and URL - ${test6Pass ? 'PASS' : 'FAIL'}
+            </div>`;
+            
+            // Test 7: Delete link
+            console.log('Test 7: Delete link');
+            const linkToDelete = links[0];
+            const beforeDelete = links.length;
+            deleteLink(linkToDelete.id);
+            const test7Pass = links.length === beforeDelete - 1 && 
+                              !links.find(l => l.id === linkToDelete.id);
+            results.innerHTML += `<div class="test-result ${test7Pass ? 'pass' : 'fail'}">
+                Test 7: Delete link - ${test7Pass ? 'PASS' : 'FAIL'}
+            </div>`;
+            
+            // Test 8: Save and load links
+            console.log('Test 8: Save and load links');
+            addLink('Test Link', 'https://test.com');
+            const savedLinks = JSON.parse(localStorage.getItem('links'));
+            const test8Pass = savedLinks && savedLinks.length === links.length;
+            results.innerHTML += `<div class="test-result ${test8Pass ? 'pass' : 'fail'}">
+                Test 8: Save links to localStorage - ${test8Pass ? 'PASS' : 'FAIL'}
+            </div>`;
+            
+            // Test 9: Load links from localStorage
+            console.log('Test 9: Load links from localStorage');
+            const currentLinks = [...links];
+            loadLinks();
+            const test9Pass = links.length === currentLinks.length;
+            results.innerHTML += `<div class="test-result ${test9Pass ? 'pass' : 'fail'}">
+                Test 9: Load links from localStorage - ${test9Pass ? 'PASS' : 'FAIL'}
+            </div>`;
+            
+            // Test 10: Render links
+            console.log('Test 10: Render links');
+            renderLinks();
+            const container = document.getElementById('links-container');
+            const test10Pass = container.children.length === links.length;
+            results.innerHTML += `<div class="test-result ${test10Pass ? 'pass' : 'fail'}">
+                Test 10: Render links to DOM - ${test10Pass ? 'PASS' : 'FAIL'}
+            </div>`;
+            
+            // Test 11: Link has unique ID
+            console.log('Test 11: Link has unique ID');
+            addLink('Link 1', 'https://link1.com');
+            addLink('Link 2', 'https://link2.com');
+            const ids = links.map(l => l.id);
+            const uniqueIds = new Set(ids);
+            const test11Pass = ids.length === uniqueIds.size;
+            results.innerHTML += `<div class="test-result ${test11Pass ? 'pass' : 'fail'}">
+                Test 11: Link IDs are unique - ${test11Pass ? 'PASS' : 'FAIL'}
+            </div>`;
+            
+            console.log('All tests completed!');
+        }, 500);
+    </script>
+</body>
+</html>

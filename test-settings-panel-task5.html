@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 5 - Settings Panel UI Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .pass {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .fail {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        h1 {
+            color: #333;
+        }
+        h2 {
+            color: #555;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .test-description {
+            color: #666;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Task 5: Settings Panel UI - Verification Tests</h1>
+    
+    <div class="test-section">
+        <h2>Test 5.1: Settings Panel HTML Structure</h2>
+        <p class="test-description">Verify all required HTML elements exist with correct IDs</p>
+        <div id="test-5-1-results"></div>
+        <button onclick="runTest51()">Run Test 5.1</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 5.2: Settings Panel Initialization</h2>
+        <p class="test-description">Verify initSettingsPanel() populates input fields with current values</p>
+        <div id="test-5-2-results"></div>
+        <button onclick="runTest52()">Run Test 5.2</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 5.3: Settings Event Handlers</h2>
+        <p class="test-description">Verify save buttons work and show feedback</p>
+        <div id="test-5-3-results"></div>
+        <button onclick="runTest53()">Run Test 5.3</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 5.4: Settings Panel Styling</h2>
+        <p class="test-description">Verify CSS styling is applied correctly</p>
+        <div id="test-5-4-results"></div>
+        <button onclick="runTest54()">Run Test 5.4</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Interactive Test</h2>
+        <p class="test-description">Open the dashboard to manually test the settings panel</p>
+        <button onclick="window.open('index.html', '_blank')">Open Dashboard</button>
+    </div>
+
+    <script>
+        function showResult(containerId, message, passed) {
+            const container = document.getElementById(containerId);
+            const div = document.createElement('div');
+            div.className = 'test-result ' + (passed ? 'pass' : 'fail');
+            div.textContent = (passed ? '✓ ' : '✗ ') + message;
+            container.appendChild(div);
+        }
+
+        function clearResults(containerId) {
+            document.getElementById(containerId).innerHTML = '';
+        }
+
+        function runTest51() {
+            clearResults('test-5-1-results');
+            
+            // Load the index.html in an iframe to test
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = 'index.html';
+            document.body.appendChild(iframe);
+            
+            iframe.onload = function() {
+                const doc = iframe.contentDocument;
+                
+                // Test settings panel exists
+                const settingsPanel = doc.getElementById('settings-panel');
+                showResult('test-5-1-results', 
+                    'Settings panel with id "settings-panel" exists', 
+                    !!settingsPanel);
+                
+                // Test name settings elements
+                const nameInput = doc.getElementById('name-input');
+                showResult('test-5-1-results', 
+                    'Name input field with id "name-input" exists', 
+                    !!nameInput);
+                
+                const saveNameBtn = doc.getElementById('save-name-btn');
+                showResult('test-5-1-results', 
+                    'Save name button with id "save-name-btn" exists', 
+                    !!saveNameBtn);
+                
+                const nameSavedIndicator = doc.getElementById('name-saved-indicator');
+                showResult('test-5-1-results', 
+                    'Name saved indicator with id "name-saved-indicator" exists', 
+                    !!nameSavedIndicator);
+                
+                // Test timer settings elements
+                const timerInput = doc.getElementById('timer-duration-input');
+                showResult('test-5-1-results', 
+                    'Timer duration input with id "timer-duration-input" exists', 
+                    !!timerInput);
+                
+                const saveTimerBtn = doc.getElementById('save-timer-btn');
+                showResult('test-5-1-results', 
+                    'Save timer button with id "save-timer-btn" exists', 
+                    !!saveTimerBtn);
+                
+                const timerSavedIndicator = doc.getElementById('timer-saved-indicator');
+                showResult('test-5-1-results', 
+                    'Timer saved indicator with id "timer-saved-indicator" exists', 
+                    !!timerSavedIndicator);
+                
+                const timerError = doc.getElementById('timer-error');
+                showResult('test-5-1-results', 
+                    'Timer error display with id "timer-error" exists', 
+                    !!timerError);
+                
+                document.body.removeChild(iframe);
+            };
+        }
+
+        function runTest52() {
+            clearResults('test-5-2-results');
+            
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = 'index.html';
+            document.body.appendChild(iframe);
+            
+            iframe.onload = function() {
+                const doc = iframe.contentDocument;
+                const win = iframe.contentWindow;
+                
+                // Set a user name in localStorage
+                win.localStorage.setItem('userName', 'TestUser');
+                
+                // Call initSettingsPanel
+                if (typeof win.initSettingsPanel === 'function') {
+                    showResult('test-5-2-results', 
+                        'initSettingsPanel() function exists', 
+                        true);
+                    
+                    win.initSettingsPanel();
+                    
+                    // Check if name input is populated
+                    const nameInput = doc.getElementById('name-input');
+                    const namePopulated = nameInput && nameInput.value === 'TestUser';
+                    showResult('test-5-2-results', 
+                        'Name input populated with current value from localStorage', 
+                        namePopulated);
+                    
+                    // Check if timer input is populated
+                    const timerInput = doc.getElementById('timer-duration-input');
+                    const timerPopulated = timerInput && timerInput.value === '25';
+                    showResult('test-5-2-results', 
+                        'Timer input populated with default value (25)', 
+                        timerPopulated);
+                } else {
+                    showResult('test-5-2-results', 
+                        'initSettingsPanel() function exists', 
+                        false);
+                }
+                
+                // Clean up
+                win.localStorage.removeItem('userName');
+                document.body.removeChild(iframe);
+            };
+        }
+
+        function runTest53() {
+            clearResults('test-5-3-results');
+            
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = 'index.html';
+            document.body.appendChild(iframe);
+            
+            iframe.onload = function() {
+                const doc = iframe.contentDocument;
+                const win = iframe.contentWindow;
+                
+                // Test attachSettingsEventListeners exists
+                if (typeof win.attachSettingsEventListeners === 'function') {
+                    showResult('test-5-3-results', 
+                        'attachSettingsEventListeners() function exists', 
+                        true);
+                } else {
+                    showResult('test-5-3-results', 
+                        'attachSettingsEventListeners() function exists', 
+                        false);
+                }
+                
+                // Test showSettingsSavedFeedback exists
+                if (typeof win.showSettingsSavedFeedback === 'function') {
+                    showResult('test-5-3-results', 
+                        'showSettingsSavedFeedback() function exists', 
+                        true);
+                    
+                    // Test feedback display
+                    const indicator = doc.getElementById('name-saved-indicator');
+                    win.showSettingsSavedFeedback('name');
+                    const isVisible = indicator && indicator.classList.contains('show');
+                    showResult('test-5-3-results', 
+                        'Success indicator displays when showSettingsSavedFeedback() is called', 
+                        isVisible);
+                } else {
+                    showResult('test-5-3-results', 
+                        'showSettingsSavedFeedback() function exists', 
+                        false);
+                }
+                
+                // Test showSettingsError exists
+                if (typeof win.showSettingsError === 'function') {
+                    showResult('test-5-3-results', 
+                        'showSettingsError() function exists', 
+                        true);
+                    
+                    // Test error display
+                    const errorElement = doc.getElementById('timer-error');
+                    win.showSettingsError('timer', 'Test error message');
+                    const errorVisible = errorElement && errorElement.classList.contains('show');
+                    showResult('test-5-3-results', 
+                        'Error message displays when showSettingsError() is called', 
+                        errorVisible);
+                } else {
+                    showResult('test-5-3-results', 
+                        'showSettingsError() function exists', 
+                        false);
+                }
+                
+                setTimeout(() => {
+                    document.body.removeChild(iframe);
+                }, 100);
+            };
+        }
+
+        function runTest54() {
+            clearResults('test-5-4-results');
+            
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = 'index.html';
+            document.body.appendChild(iframe);
+            
+            iframe.onload = function() {
+                const doc = iframe.contentDocument;
+                const win = iframe.contentWindow;
+                
+                // Check settings panel styling
+                const settingsPanel = doc.getElementById('settings-panel');
+                if (settingsPanel) {
+                    const styles = win.getComputedStyle(settingsPanel);
+                    
+                    // Check if it has distinct background
+                    const hasBackground = styles.backgroundColor !== 'rgba(0, 0, 0, 0)';
+                    showResult('test-5-4-results', 
+                        'Settings panel has background color', 
+                        hasBackground);
+                    
+                    // Check if it has border
+                    const hasBorder = styles.borderWidth !== '0px';
+                    showResult('test-5-4-results', 
+                        'Settings panel has border', 
+                        hasBorder);
+                    
+                    // Check if it has padding
+                    const hasPadding = styles.padding !== '0px';
+                    showResult('test-5-4-results', 
+                        'Settings panel has padding', 
+                        hasPadding);
+                }
+                
+                // Check input field styling
+                const nameInput = doc.getElementById('name-input');
+                if (nameInput) {
+                    const styles = win.getComputedStyle(nameInput);
+                    const hasBorder = styles.borderWidth !== '0px';
+                    showResult('test-5-4-results', 
+                        'Input fields have border styling', 
+                        hasBorder);
+                }
+                
+                // Check button styling
+                const saveBtn = doc.getElementById('save-name-btn');
+                if (saveBtn) {
+                    const styles = win.getComputedStyle(saveBtn);
+                    const hasBackground = styles.backgroundColor !== 'rgba(0, 0, 0, 0)';
+                    showResult('test-5-4-results', 
+                        'Save buttons have background color', 
+                        hasBackground);
+                }
+                
+                // Check saved indicator styling
+                const indicator = doc.getElementById('name-saved-indicator');
+                if (indicator) {
+                    const styles = win.getComputedStyle(indicator);
+                    const isHidden = styles.display === 'none';
+                    showResult('test-5-4-results', 
+                        'Success indicators are hidden by default', 
+                        isHidden);
+                }
+                
+                document.body.removeChild(iframe);
+            };
+        }
+    </script>
+</body>
+</html>

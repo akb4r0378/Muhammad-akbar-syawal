@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Property 10 - Quick Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        h1 { color: #333; }
+        #results {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .pass { color: green; }
+        .fail { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Property 10: Load-Save Round Trip - Quick Verification</h1>
+    <p><strong>Validates: Requirements 4.4, 4.5, 6.3, 6.4</strong></p>
+    <p>Testing with reduced test cases (8 total: 4 tasks + 4 links)</p>
+    <button onclick="runTests()">Run Tests</button>
+    <div id="results">Click "Run Tests" to start...</div>
+    
+    <script src="test-property-10.html" style="display:none;"></script>
+    <script>
+        function runTests() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.textContent = 'Running tests...\n\n';
+            
+            // Redirect to the full test page
+            window.location.href = 'test-property-10.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run Property 10 Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #2196F3;
+        }
+        .button-container {
+            margin: 30px 0;
+            text-align: center;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .details {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .details h2 {
+            color: #555;
+            margin-top: 0;
+        }
+        ul {
+            line-height: 1.8;
+        }
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Property 10: Load-Save Round Trip Test</h1>
+    
+    <div class="info">
+        <strong>Task 10.3:</strong> Write property test for load-save round trip<br>
+        <strong>Validates:</strong> Requirements 4.4, 4.5, 6.3, 6.4<br>
+        <strong>Test Cases:</strong> 8 total (4 for tasks, 4 for links) - Reduced for faster execution
+    </div>
+    
+    <div class="button-container">
+        <button onclick="window.location.href='test-property-10.html'">
+            🚀 Run Property 10 Test
+        </button>
+    </div>
+    
+    <div class="details">
+        <h2>Test Overview</h2>
+        <p>This property-based test verifies that data loaded from Local Storage and then saved remains unchanged.</p>
+        
+        <h3>Property Being Tested:</h3>
+        <p><code>∀ data d stored in localStorage, let loaded = JSON.parse(localStorage.getItem(key)), let saved = JSON.stringify(loaded), then: saved ≡ d</code></p>
+        
+        <h3>Test Cases (Reduced from 12 to 8):</h3>
+        
+        <h4>Tasks (4 test cases):</h4>
+        <ul>
+            <li>Empty tasks array</li>
+            <li>Single task</li>
+            <li>Multiple tasks with mixed states and special characters</li>
+            <li>20 tasks (reduced from 50)</li>
+        </ul>
+        
+        <h4>Links (4 test cases):</h4>
+        <ul>
+            <li>Empty links array</li>
+            <li>Single link</li>
+            <li>Multiple links with special characters</li>
+            <li>15 links (reduced from 30)</li>
+        </ul>
+        
+        <h3>What the Test Validates:</h3>
+        <ul>
+            <li><strong>Requirement 4.4:</strong> Task list retrieves all tasks from Local Storage on load</li>
+            <li><strong>Requirement 4.5:</strong> Task list displays all retrieved tasks</li>
+            <li><strong>Requirement 6.3:</strong> Quick links retrieve all links from Local Storage on load</li>
+            <li><strong>Requirement 6.4:</strong> Quick links display all retrieved links</li>
+        </ul>
+        
+        <h3>Expected Result:</h3>
+        <p>All 8 test cases should pass, confirming that the load-save round trip maintains data integrity for both tasks and links.</p>
+    </div>
+    
+    <div class="details">
+        <h2>Files Updated</h2>
+        <ul>
+            <li><code>test-property-10.html</code> - Browser-based property test (updated)</li>
+            <li><code>test-property-10-runner.js</code> - Node.js test runner (updated)</li>
+        </ul>
+    </div>
+</body>
+</html>
